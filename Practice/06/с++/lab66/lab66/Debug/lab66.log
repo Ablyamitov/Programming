@@ -1,0 +1,4 @@
+﻿  lab66.cpp
+C:\Users\Энчантикс\Desktop\Programming\Practice\06\с++\lab66\lab66\lab66.cpp(1,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\Users\Энчантикс\Desktop\Programming\Practice\06\с++\lab66\lab66\lab66.cpp(2,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+  lab66.vcxproj -> C:\Users\Энчантикс\Desktop\Programming\Practice\06\с++\lab66\Debug\lab66.exe

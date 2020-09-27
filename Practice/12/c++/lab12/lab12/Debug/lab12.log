@@ -1,0 +1,4 @@
+﻿  lab12.cpp
+C:\Users\Энчантикс\Desktop\Programming\Practice\12\c++\lab12\lab12\lab12.cpp(1,9): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\Users\Энчантикс\Desktop\Programming\Practice\12\c++\lab12\lab12\lab12.cpp(12,7): warning C4553: "==": результат выражения не используется; вы хотели использовать "="?
+  lab12.vcxproj -> C:\Users\Энчантикс\Desktop\Programming\Practice\12\c++\lab12\Debug\lab12.exe
