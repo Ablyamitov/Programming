@@ -5,6 +5,7 @@ int main()
 {
 	setlocale(LC_ALL, "RUS");
 	int x = 0,k = 0;
+
 	long long n;
 	cout << "Введите число: ";
 	cin >> n;

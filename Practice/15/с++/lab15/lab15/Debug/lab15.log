@@ -1,0 +1,5 @@
+﻿  lab15.cpp
+C:\Users\Энчантикс\Desktop\Programming\Practice\15\с++\lab15\lab15\lab15.cpp(1,9): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\Users\Энчантикс\Desktop\Programming\Practice\15\с++\lab15\lab15\lab15.cpp(2,9): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\Users\Энчантикс\Desktop\Programming\Practice\15\с++\lab15\lab15\lab15.cpp(7,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  lab15.vcxproj -> C:\Users\Энчантикс\Desktop\Programming\Practice\15\с++\lab15\Debug\lab15.exe
