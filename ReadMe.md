@@ -9,7 +9,7 @@
 | Практическая 1 - [[C++]](./Practice/01/с++/) [[Python]](./Practice/01/python/) | [Лабораторная 1](./Lab/01/ReadMe.md) |
 | Практическая 2 - [[C++]](./Practice/02/c++/) [[Python]](./Practice/02/python/) | [Лабораторная 2](./Lab/02/ReadMe.md) |
 | Практическая 3 - [[C++]](./Practice/03/с++/) [[Python]](./Practice/03/python/) | [Лабораторная 3](./Lab/03/ReadMe.md) |
-| Практическая 4 - [[C++]](./Practice/04/с++/) [[Python]](./Practice/04/python/) | [Лабораторная 4](./Lab/04/ReadMe.md) |
+| Практическая 4 - [[C++]](./Practice/04/c++/) [[Python]](./Practice/04/python/) | [Лабораторная 4](./Lab/04/ReadMe.md) |
 | Практическая 5 - [[C++]](./Practice/05/с++/) [[Python]](./Practice/05/python/) | [Лабораторная 5](./Lab/05/ReadMe.md) |
 | Практическая 6 - [[C++]](./Practice/06/с++/) [[Python]](./Practice/06/python/) | [Лабораторная 6](./Lab/06/ReadMe.md) |
 | Практическая 7 - [[C++]](./Practice/07/с++/) [[Python]](./Practice/07/python/) |                                      |
