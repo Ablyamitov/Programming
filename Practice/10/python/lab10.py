@@ -1,29 +1,14 @@
 s,l1,r1,l2,r2 = map(int, input("Введите s,l1,r1,l2,r2: ").split())
-x1 = l1
-x2 = r2
-def first(s,l1,r1,l2,r2,x1,x2):
-	if (x1 + x2 == s):
-		print(x1,x2)
-		exit(0)
-	else:
-		if (x2>l2):
-				x2 = x2 - 1
-		elif ((x2 == l2) and (x1<r1)):
-				x1 = x1 + 1
-				x2 = r2
-		if ((x1 == r1) and (x2 == r2)):
-			if (x1 + x2 == s):
-				print(x1, x2)
-				exit (0)
-			else:
-				print(-1)
-				exit(0)
-		first(s,l1,r1,l2,r2,x1,x2)
-if(x1 + x2) == s:
-    print(x1, x2)
+if ((r1 + r2) < s):
+	print(-1)
+elif ((l1 + l2) > s):
+	print(-1)
 else:
-    first(s,l1,r1,l2,r2,x1,x2)
-
-
-
-
+	if (l1 + r2 - s == 0):
+		print(l1,"",r2)
+	elif(l1 + r2 - s<0):
+		x = l1 - (l1 + r2 - s)
+		print(x,"",r2)
+	elif(l1 + r2 - s > 0):
+		x = r2 - (l1 + r2 - s)
+		print(l1,"",x)

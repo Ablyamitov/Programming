@@ -3,7 +3,7 @@ using namespace std;
 int main()
 {
 	setlocale(LC_ALL, "RUS");
-	int s, l1, r1, l2, r2, x1, x2;
+	int s, l1, r1, l2, r2,x ;
 	cout << "Введите s,l1,r1,l2,r2: ";
 	cin >> s >> l1 >> r1 >> l2 >> r2;
 	if ((r1 + r2) < s)
@@ -17,19 +17,19 @@ int main()
 	}
 	else
 	{
-		if ((r1 + r2) == s)
+		if (l1 + r2 - s == 0)
 		{
-			cout << r1 << " " << r2;
+			cout << l1 << " " << r2;
 		}
-		else if ((l1 + l2) == s)
+		else if (l1 + r2 - s<0)
 		{
-			cout << l1 << " " << l2;
+			x = l1 - (l1 + r2 - s);
+			cout << x << " " << r2;
 		}
-		else
+		else if (l1 + r2 - s > 0)
 		{
-			x1 = l1 + s;
-			x2 = r2 - s;
-			cout << x1 << " " << x2;
+			x = r2 - (l1 + r2 - s);
+			cout << l1 << " " << x;
 		}
 	}
 }
