@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿//не уверен, что работает правильно
+#include <iostream>
 #include <string>
 #include <cmath>
 #include <ctime>
@@ -99,7 +100,7 @@ int main()
 				all += password[x];
 			}
 			allpassword[j] = all;
-			for (int h = 0;h <= j-1;h++)
+			for (int h = 0;h <= j - 1;h++)
 			{
 				if (allpassword[j] == notpassword[h])
 				{
@@ -109,7 +110,7 @@ int main()
 					break;
 				}
 				else continue;
-				
+
 				if (!check)
 					break;
 			}
