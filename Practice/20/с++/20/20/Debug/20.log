@@ -1,0 +1,5 @@
+﻿  20.cpp
+C:\Users\Энчантикс\Desktop\Programming\Practice\20\с++\20\20\20.cpp(1,9): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\Users\Энчантикс\Desktop\Programming\Practice\20\с++\20\20\20.cpp(2,9): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\Users\Энчантикс\Desktop\Programming\Practice\20\с++\20\20\20.cpp(7,23): warning C4101: Namecount: неиспользованная локальная переменная
+  20.vcxproj -> C:\Users\Энчантикс\Desktop\Programming\Practice\20\с++\20\Debug\20.exe

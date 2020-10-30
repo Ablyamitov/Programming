@@ -1,6 +1,6 @@
 def zanovo():
 	import random
-	n = random.randint(0,100)
+	n = random.randint(0,101)
 	for i in range (0,4):
 		mb = int(input("Введите предполагаемое число: "))
 		if (mb == n):

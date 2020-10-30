@@ -1,0 +1,6 @@
+﻿  18.cpp
+C:\Users\Энчантикс\Desktop\Programming\Practice\18\c++\18\18\18.cpp(1,9): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\Users\Энчантикс\Desktop\Programming\Practice\18\c++\18\18\18.cpp(2,9): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+C:\Users\Энчантикс\Desktop\Programming\Practice\18\c++\18\18\18.cpp(16,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\Энчантикс\Desktop\Programming\Practice\18\c++\18\18\18.cpp(18,21): warning C4018: <: несоответствие типов со знаком и без знака
+  18.vcxproj -> C:\Users\Энчантикс\Desktop\Programming\Practice\18\c++\18\Debug\18.exe
