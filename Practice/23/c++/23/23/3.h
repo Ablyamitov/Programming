@@ -1,7 +1,7 @@
 #ifndef Thirdfile
 #define Thirdfile
 #include "1.h"
-int comb(int n, int k)
+int comb(int k, int n)
 {
 	return factorial(n) /( factorial(k) * factorial(n - k));	
 }

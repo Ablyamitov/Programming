@@ -4,14 +4,12 @@
 #include "1.h"
 double Teylor(double x, int k)
 {
-	int count = 1;
-	double sinx = x;
-	while (count <= k)
+	double rez = x;
+	for(int i = 1; i<=k;i++)
 	{
-		sinx += pow(-1, count) * pow(x, (2 * count + 1 )) / factorial(2 * count + 1 );
-		count++;
+		rez += pow(-1, i) * pow(x, (2 * i + 1 )) / factorial(2 * i + 1 );
 	}
-	return sinx;
+	return rez;
 }
 #endif
 
