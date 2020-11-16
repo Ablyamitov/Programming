@@ -1,2 +1,3 @@
 ﻿  23.cpp
-C:\Users\Энчантикс\Desktop\Programming\Practice\23\c++\23\23\2.h(1,1): fatal error C1016: для #if[n]def требуется идентификатор
+C:\Users\Энчантикс\Desktop\Programming\Practice\23\c++\23\23\3.h(6,22): warning C4244: return: преобразование "__int64" в "int", возможна потеря данных
+  23.vcxproj -> C:\Users\Энчантикс\Desktop\Programming\Practice\23\c++\23\Debug\23.exe

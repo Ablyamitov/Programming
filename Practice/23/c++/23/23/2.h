@@ -1,18 +1,19 @@
-#ifndef 2_H
-#define 2_H
-#include "1.h"
+#ifndef Secondheader
+#define Secondheader
 #include<cmath>
+#include "1.h"
 double Teylor(double x, int k)
 {
-	int cout == 0;
-	double sum == 0.0;
-	while (cout <= k)
+	int count = 1;
+	double sinx = x;
+	while (count <= k)
 	{
-		if (cout % 2 = !0 && cout != 0)
-			sum += (pow(x, k)) / factorial(k);
-		cout++;
+		sinx += pow(-1, count) * pow(x, (2 * count + 1 )) / factorial(2 * count + 1 );
+		count++;
 	}
-	return x - sum;
+	return sinx;
 }
 #endif
+
+
 
