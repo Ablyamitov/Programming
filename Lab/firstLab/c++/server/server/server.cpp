@@ -93,7 +93,7 @@ void gen_response_raw(const Request& req, Response& response) {
 
 	Client worldtimeapi("http://worldtimeapi.org");
 	auto res_worldtimeapi = worldtimeapi.Get("/api/timezone/Europe/Simferopol");
-	
+
 	if (!res_worldtimeapi)
 	{
 		response.set_content("Запрос к серверу времени не удался", "text/plain");
@@ -161,7 +161,7 @@ void gen_response_raw(const Request& req, Response& response) {
 	std::string Raw = raw.dump();
 	response.set_content(Raw, "text/json");
 }
-	
+
 
 int main() {
 
