@@ -271,7 +271,8 @@ empty_frame_for_exess_space.pack(side=BOTTOM, fill=X)
 
 
 ournowweather()
-root.mainloop()```
+root.mainloop()
+```
 6. Скриншот графического интерфейса клиентского приложения созданного мною:
 
 
