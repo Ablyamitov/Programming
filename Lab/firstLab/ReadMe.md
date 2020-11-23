@@ -273,9 +273,9 @@ empty_frame_for_exess_space.pack(side=BOTTOM, fill=X)
 ournowweather()
 root.mainloop()```
 6. Скриншот графического интерфейса клиентского приложения созданного мною:
-![Рис.1. Скриншот работы клиентского приложения.](./screen/Screenshot_2.png)
+![](./screen/Screenshot_2.png)
 7. Скриншот браузера с загруженными виджетом созданного мною:
-![Рис.2. Скриншот работы серверного приложения.](./screen/Screenshot_1.png)
+![](./screen/Screenshot_1.png)
 
 ## Вывод
 
