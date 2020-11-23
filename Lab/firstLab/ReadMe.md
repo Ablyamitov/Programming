@@ -279,7 +279,7 @@ root.mainloop()```
 
 7. Скриншот браузера с загруженными виджетом созданного мною:
 
-![Рис.2. Скриншот работы серверного приложения.](./icon/browser.png)
+![Рис.2. Скриншот работы серверного приложения.](https://github.com/Ablyamitov/Programming/blob/master/Lab/firstLab/icon/browser.png)
 
 
 
