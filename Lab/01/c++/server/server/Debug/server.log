@@ -1,4 +1,0 @@
-﻿  server.cpp
-C:\Users\Энчантикс\Desktop\Programming\Lab\01\c++\server\server\server.cpp(65,20): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Энчантикс\Desktop\Programming\Lab\01\c++\server\server\server.cpp(143,20): warning C4018: <: несоответствие типов со знаком и без знака
-  server.vcxproj -> C:\Users\Энчантикс\Desktop\Programming\Lab\01\c++\server\Debug\server.exe

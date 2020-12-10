@@ -1,7 +1,0 @@
-﻿  ConsoleApplication1.cpp
-C:\Users\Энчантикс\Desktop\Programming\Practice\19\c++\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(12,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\Users\Энчантикс\Desktop\Programming\Practice\19\c++\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(30,19): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Энчантикс\Desktop\Programming\Practice\19\c++\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(43,20): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Энчантикс\Desktop\Programming\Practice\19\c++\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(70,23): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\Энчантикс\Desktop\Programming\Practice\19\c++\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.cpp(104,21): warning C4018: <: несоответствие типов со знаком и без знака
-  ConsoleApplication1.vcxproj -> C:\Users\Энчантикс\Desktop\Programming\Practice\19\c++\ConsoleApplication1\Debug\ConsoleApplication1.exe

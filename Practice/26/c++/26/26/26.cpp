@@ -4,8 +4,8 @@
 #include<ctime>
 #include<cmath>
 
-
-void coutrezult(std::vector<int> coutme) {
+template <class T>
+void coutrezult(std::vector<T> coutme) {
 	std::cout << std::endl;
 	for (int i = 0; i < coutme.size();i++) {
 		std::cout << coutme[i] << " ";
@@ -13,9 +13,9 @@ void coutrezult(std::vector<int> coutme) {
 }
 
 //ПЕРВАЯ ФУНКЦИЯ ДЛЯ ВЕЩЕСТВЕННОГО МАССИВА
-
-std::vector <int> BozoSort(std::vector<double>a, bool check = true){
-	std::vector<int>forint;
+template <class T>
+std::vector <T> BozoSort(std::vector<T>a, bool check = true){
+	std::vector<T>forint;
 	for (int i = 0; i < a.size();i++) {
 		forint.push_back(a[i]);
 	}
@@ -24,7 +24,7 @@ std::vector <int> BozoSort(std::vector<double>a, bool check = true){
 		int x1 = rand() % forint.size();
 		int x2 = rand() % forint.size();
 
-		int swap = forint[x1];
+		T swap = forint[x1];
 		forint[x1] = forint[x2];
 		forint[x2] = swap;
 
@@ -48,95 +48,43 @@ std::vector <int> BozoSort(std::vector<double>a, bool check = true){
 	}
 
 	return forint;
+
 }
 
 //ПЕРВАЯ ФУНКЦИЯ ДЛЯ СТРОК
 
-std::vector <int> BozoSort(std::vector<std::string>a, bool check = true) {
-	std::vector<int>convert;
+//ВТОРАЯ ФУНКЦИЯ ДЛЯ ВЕЩЕСТВЕННОЙ МАТРИЦЫ
+template <class T>
+std::vector<T> BozoSort(std::vector < std::vector < T>>a, bool check = true) {
+	std::vector<T>help;
 	for (int i = 0; i < a.size();i++) {
-		convert.push_back(stoi(a[i]));
-	}
-	bool sorted = false;
-	while (!sorted) {
-		int x1 = rand() % convert.size();
-		int x2 = rand() % convert.size();
-
-		int swap = convert[x1];
-		convert[x1] = convert[x2];
-		convert[x2] = swap;
-
-		sorted = true;
-		if (check) {
-			for (int i = 1; i < convert.size();i++) {
-				if (convert[i - 1] > convert[i]) {
-					sorted = false;
-					break;
-				}
-			}
-		}
-		else {
-			for (int i = 1; i < convert.size();i++) {
-				if (convert[i - 1] < convert[i]) {
-					sorted = false;
-					break;
-				}
-			}
+		for (int j = 0;j < a.size();j++) {
+			help.push_back(a[i][j]);
 		}
 	}
-
-	return convert;
+	return BozoSort(help, check);
 }
 
-//ВТОРАЯ ФУНКЦИЯ ДЛЯ ВЕЩЕСТВЕННОЙ МАТРИЦЫ
 
-std::vector<int> BozoSort(std::vector < std::vector < double>>a, bool check = true) {
-	std::vector<double>help;
-	for (int i = 0; i < a.size();i++) {
-		for (int j = 0;j < a.size();j++) {
-			help.push_back(a[i][j]);
-		}
-	}
-	return BozoSort(help, check);
-};
 
-//ВТОРАЯ ФУНКЦИЯ ДЛЯ ВЕЩЕСТВЕННОЙ СТРОКИ
 
-std::vector<int> BozoSort(std::vector < std::vector < std::string>>a, bool check = true) {
-	std::vector<std::string>help;
-	for (int i = 0; i < a.size();i++) {
-		for (int j = 0;j < a.size();j++) {
-			help.push_back(a[i][j]);
-		}
-	}
-	return BozoSort(help, check);
-};
 
 //ТРЕТЬЯ ФУНКЦИЯ ДЛЯ ВЕЩЕСТВЕННЫХ ЧИСЕЛ
-
-std::vector<int> BozoSort(double first, double second, double third, bool check = true) {
-	std::vector<double>three;
+template <class T>
+std::vector<T> BozoSort(T first, T second, T third, bool check = true) {
+	std::vector<T>three;
 	three.push_back(first);
 	three.push_back(second);
 	three.push_back(third);
 	return BozoSort(three, check);
 }
 
-//ТРЕТЬЯ ФУНКЦИЯ ДЛЯ СТРОК
 
-std::vector<int> BozoSort(std::string first, std::string second, std::string third, bool check = true) {
-	std::vector<std::string>three;
-	three.push_back(first);
-	three.push_back(second);
-	three.push_back(third);
-	return BozoSort(three, check);
-}
 
 
 int main() {
 	srand(time(0));
 	std::vector <double> a;
-	std::vector <int> temp;
 	bool check;
 	int n;
 	std::cin >> n;
@@ -153,8 +101,6 @@ int main() {
 	std::cout;
 	std::cin >> n1;
 	std::vector <std::string> newa;
-	std::vector <int> newtemp;
-	//1-ое задание - массив целых чисел
 	std::string newx;
 	for (int i = 0;i < n1;i++) {
 		std::cin >> newx;
@@ -199,35 +145,36 @@ int main() {
 	//ТРЕТЬЕ ЗАДАНИЕ ДЛЯ СТРОКОВОЙ МАТРИЦЫ
 	std::string newfirst = newa[0], newsecond = newa[1], newthird = newa[2];
 
-	temp = BozoSort(a);
-	coutrezult(temp);
-	temp = BozoSort(a, check = false);
-	coutrezult(temp);
+	
+	coutrezult(BozoSort(a));
+	
+	coutrezult(BozoSort(a, check = false));
+	
+	
+	coutrezult(BozoSort(a2));
+	
+	coutrezult(BozoSort(a2, check = false));
 
-	temp = BozoSort(a2);
-	coutrezult(temp);
-	temp = BozoSort(a2, check = false);
-	coutrezult(temp);
 
-	temp = BozoSort(first, second, third);
-	coutrezult(temp);
-	temp = BozoSort(first, second, third, check = false);
-	coutrezult(temp);
+	coutrezult(BozoSort(first, second, third));
 
-	newtemp = BozoSort(newa);
-	coutrezult(newtemp);
-	newtemp = BozoSort(newa, check = false);
-	coutrezult(newtemp);
+	coutrezult(BozoSort(first, second, third, check = false));
 
-	newtemp = BozoSort(a22);
-	coutrezult(newtemp);
-	newtemp = BozoSort(a22, check = false);
-	coutrezult(newtemp);
+	
+	coutrezult(BozoSort(newa));
+	
+	coutrezult(BozoSort(newa, check = false));
 
-	temp = BozoSort(newfirst, newsecond, newthird);
-	coutrezult(temp);
-	temp = BozoSort(newfirst, newsecond, newthird, check = false);
-	coutrezult(temp);
+
+	coutrezult(BozoSort(a22));
+	
+	coutrezult(BozoSort(a22, check = false));
+	
+
+	coutrezult(BozoSort(newfirst, newsecond, newthird));
+	
+	coutrezult(BozoSort(newfirst, newsecond, newthird, check = false));
+	
 }
 
 
