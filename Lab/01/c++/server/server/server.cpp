@@ -73,18 +73,19 @@ void gen_response(const Request& req, Response& response) {
 	if (!check) {
 		cache = res_openweathermap->body;
 	}
-
+	std::string copyShablon;
+	copyShablon = Shablon;
 	std::string one = "{hourly[i].weather[0].description}";
-	Shablon.replace(Shablon.find(one), one.length(), remember_way["weather"][0]["description"]);
+	copyShablon.replace(copyShablon.find(one), one.length(), remember_way["weather"][0]["description"]);
 
 	std::string two = "{hourly[i].weather[0].icon}";
-	Shablon.replace(Shablon.find(two), two.length(), remember_way["weather"][0]["icon"]);
+	copyShablon.replace(copyShablon.find(two), two.length(), remember_way["weather"][0]["icon"]);
 
 	std::string three = "{hourly[i].temp}";
-	Shablon.replace(Shablon.find(three), three.length(), std::to_string(int(remember_way["temp"].get<double>())));
-	Shablon.replace(Shablon.find(three), three.length(), std::to_string(int(remember_way["temp"].get<double>())));
+	copyShablon.replace(copyShablon.find(three), three.length(), std::to_string(int(remember_way["temp"].get<double>())));
+	copyShablon.replace(copyShablon.find(three), three.length(), std::to_string(int(remember_way["temp"].get<double>())));
 
-	response.set_content(Shablon, "text/html");
+	response.set_content(copyShablon, "text/html");
 }
 
 
@@ -167,6 +168,7 @@ int main() {
 
 	std::ifstream file("Шаблон погоды.html");
 	getline(file, Shablon, '\0');
+	file.close();
 
 
 	Server svr;
