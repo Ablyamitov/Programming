@@ -279,11 +279,13 @@ root.mainloop()
 6. Скриншот графического интерфейса клиентского приложения созданного мною:
 
 
-[Рис.1. Скриншот работы клиентского приложения.](https://github.com/Ablyamitov/Programming/blob/master/Lab/01/icon/klient.png)
+(https://github.com/Ablyamitov/Programming/blob/master/Lab/01/icon/klient.png)
+![Рис.1. Скриншот работы клиентского приложения.]
 
 7. Скриншот браузера с загруженными виджетом созданного мною:
 
-[Рис.2. Скриншот работы серверного приложения.](https://github.com/Ablyamitov/Programming/blob/master/Lab/01/icon/browser.png)
+(https://github.com/Ablyamitov/Programming/blob/master/Lab/01/icon/browser.png)
+![Рис.2. Скриншот работы серверного приложения.]
 
 
 
