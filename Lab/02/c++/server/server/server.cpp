@@ -30,9 +30,9 @@ void save_config_file(json config) {
 
 std::string edit_webhook_template() {
 
-    const std::string webhooks_list = "{webhooks_list}";
-    const std::string Webhook_URL = "{Webhook URL}";
-    const std::string piece_of_HTML = u8R"(
+    std::string webhooks_list = "{webhooks_list}";
+    std::string Webhook_URL = "{Webhook URL}";
+    std::string piece_of_HTML = u8R"(
 <div class="form-row align-items-center">
     <div class="col">
         <input type="text" value="{Webhook URL}" class="form-control mb-2" disabled>
@@ -57,17 +57,15 @@ std::string edit_webhook_template() {
         return "";
     }
 
-
+    std::string one_piece_of_HTML;
     std::string full_piece_of_HTML;
-    webhooks_size = write_config_file["webhooks"].size();
 
-    if (webhooks_size) {
-        for (int i = 0; i < webhooks_size; i++) {
-            remember_webhook_way = write_config_file["webhooks"][i];
-            std::string one_piece_of_HTML = piece_of_HTML;
+    if (write_config_file["webhooks"].size()!=0) {
+        for (int i = 0; i < write_config_file["webhooks"].size(); i++) {
+            one_piece_of_HTML = piece_of_HTML;
 
-            one_piece_of_HTML.replace(one_piece_of_HTML.find(Webhook_URL), Webhook_URL.size(), remember_webhook_way);
-            one_piece_of_HTML.replace(one_piece_of_HTML.find(Webhook_URL), Webhook_URL.size(), remember_webhook_way);
+            one_piece_of_HTML.replace(one_piece_of_HTML.find(Webhook_URL), Webhook_URL.size(), write_config_file["webhooks"][i]);
+            one_piece_of_HTML.replace(one_piece_of_HTML.find(Webhook_URL), Webhook_URL.size(), write_config_file["webhooks"][i]);
 
             full_piece_of_HTML = full_piece_of_HTML + one_piece_of_HTML;
         }
@@ -80,24 +78,22 @@ std::string edit_webhook_template() {
     return webhooks_template;
 }
 
-void edit_webhook_website(const Request& req) {
+void edit_webhook_website(const Request& req, Response& res) {
+    bool if_webhook_already_exist;
     if (req.has_param("set")) {
-        std::string set_webhook = req.get_param_value("set");
 
-        if (set_webhook == "") {
+        if (req.get_param_value("set") == "") {
         }
         else {
+            if_webhook_already_exist = false;
+            write_config_file["webhooks"].size();
 
-            webhooks_size = write_config_file["webhooks"].size();
-            bool if_webhook_already_exist = false;
+            for (int i = 0; i < write_config_file["webhooks"].size(); i++) {
 
-            for (int i = 0; i < webhooks_size; i++) {
-                remember_webhook_way = write_config_file["webhooks"][i];
-
-                if (remember_webhook_way == set_webhook) {
+                if (write_config_file["webhooks"][i] == req.get_param_value("set")) {
 
                     number++;
-                    write_in_txt_file << number << "." << u8" Следующий вебхук уже есть: " << remember_webhook_way << std::endl;
+                    write_in_txt_file << number << "." << u8" Следующий вебхук уже есть: " << write_config_file["webhooks"][i] << std::endl;
 
                     if_webhook_already_exist = true;
 
@@ -106,30 +102,27 @@ void edit_webhook_website(const Request& req) {
             }
             if (!if_webhook_already_exist) {
 
-                write_config_file["webhooks"].push_back(set_webhook);
+                write_config_file["webhooks"].push_back(req.get_param_value("set"));
 
                 number++;
-                write_in_txt_file << number << "." << u8" Добавлен следующий вебхук:  " << set_webhook << std::endl;
+                write_in_txt_file << number << "." << u8" Добавлен следующий вебхук:  " << req.get_param_value("set") << std::endl;
 
             }
         }
     }
     else if (req.has_param("del")) {
 
-        std::string del_webhook = req.get_param_value("del");
-        webhooks_size = write_config_file["webhooks"].size();
-
-        for (int i = 0; i < webhooks_size; i++) {
+        for (int i = 0; i < write_config_file["webhooks"].size(); i++) {
 
             std::string remember_webhook_way = write_config_file["webhooks"][i];
 
-            if (remember_webhook_way == del_webhook)
+            if (remember_webhook_way == req.get_param_value("del"))
             {
                 write_config_file["webhooks"].erase(write_config_file["webhooks"].begin() + i);
 
                 number++;
                 write_in_txt_file << number << "." << u8" Удалён следующий вебхук: " << remember_webhook_way << std::endl;
-
+                break;
             }
         }
     }
@@ -138,19 +131,16 @@ void edit_webhook_website(const Request& req) {
 
 void webhooks_post(const Request& req, Response& res) {
 
-    edit_webhook_website(req);
+    edit_webhook_website(req,res);
 
-    std::string send_response = edit_webhook_template();
 
-    res.set_content(send_response, "text/html; charset=UTF-8");
+    res.set_content(edit_webhook_template(), "text/html; charset=UTF-8");
 
 }
 
 void webhooks_get(const Request& req, Response& res) {
 
-    std::string send_response = edit_webhook_template();
-
-    res.set_content(send_response, "text/html");
+    res.set_content(edit_webhook_template(), "text/html");
 
 }
 
