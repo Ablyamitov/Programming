@@ -23,7 +23,7 @@ def make_excel_file(): #тут записываем в наш эксель по�
 		for i in range(1,6):
 			sheet.cell(row_to_write_sells,i).value = sells[i]
 		row_to_write_sells+=1
-	for i in range (5):
+	for i in range len(remember_our_sells):
 			remember_our_sells.pop(i)
 	book.save('data.xlsx')
 	book.close
@@ -52,21 +52,22 @@ def index():
 
 
 if __name__ == "__main__":
-    global N
-    global remember_our_sells
-    global row_to_write_sells
-    row_to_write_sells = 2
-    remember_our_sells = []
-    N = 1
-    if not(os.path.exists('data.xlsx')):    
-        book = openpyxl.Workbook()
-        sheet = book.active
-        sheet = make_book(sheet)
-        book.save('data.xlsx')
-        book.close
-    else:
-        book = openpyxl.load_workbook('data.xlsx')
-        sheet = book.active
-        N = sheet.cell(1,6).value
-        book.close
-    app.run()
+	global N
+	global remember_our_sells
+	global row_to_write_sells
+	row_to_write_sells = 2
+	remember_our_sells = []
+	N = 1
+	check_file = os.path.exists('data.xlsx')
+	if (check_file):    
+		book = openpyxl.load_workbook('data.xlsx')
+		sheet = book.active
+		N = int(sheet.cell(row = sheet.max_row, column = 1).value) + 1
+		book.close
+	else:
+		book = openpyxl.Workbook()
+		sheet = book.active
+		sheet = make_book(sheet)
+		book.save('data.xlsx')
+		book.close
+	app.run()
