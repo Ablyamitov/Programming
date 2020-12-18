@@ -84,7 +84,7 @@
 [excel файл](Python/data.xlsx)
 
 6. Полный код серверного приложения, который я успел написать:
-'''
+"""
 c++
 #include <iostream>
 #include <string>
@@ -358,7 +358,7 @@ int main() {
 
     svr.listen("localhost", 1234);
 }
-'''
+"""
 
 
 
