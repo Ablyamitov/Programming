@@ -59,8 +59,9 @@
 
 Рисунок 1. Скриншот настройки навыка.
 
-2-3. Я не успел сделать серверное приложение, лишь создал оболочку функции, формирующий ответ Алисе и заготовки комманд,
-поэтому, к сожалению, функционал Корзины и Помощи мне пока не доступны.
+2-3. Я не успел сделать серверное приложение, лишь создал оболочку функции, формирующий ответ Алисе и заготовки комманд.
+
+Поэтому, к сожалению, функционал Корзины и Помощи мне пока не доступны.
 Поэтому вставлю скриншот нерабочего состояния навыка, учитывая тот код, который я успел написать.
 
 ![](icon/Alice.png)
@@ -68,6 +69,7 @@
 Рисунок 2. Скриншот нерабочего навыка.
 
 4. Скриншот страницы управления webhook-ами с добавленным webhook-ом клиентского приложения
+
 Создаю веб-страницу для управления вебхуками. Перед этим создаю конфигурационный файл, откуда будет браться ссылка для вствки в шаблон html кода.
 В коде, в функции отправляющей get-запрос я редактирую шаблон html файла и формирую ответ в формате get.
 В коде, в функции отправляющей post-запрос я реализую принятие параметра, делаю соответствищие действия с ним в json файле и отправляю ответ в формате post с кодировкой utf-8. 
@@ -359,6 +361,103 @@ int main() {
     svr.listen("localhost", 1234);
 }
 ```
+
+7. Полный исходный код клиентского приложения:
+
+```
+python
+import openpyxl
+from flask import Flask, request
+import datetime
+import json
+import os.path
+
+def make_book(sheet):
+	sheet.cell(row = 1,column = 1).value = 'N'
+	sheet.cell(row = 1,column = 2).value = 'User ID'
+	sheet.cell(row = 1,column = 3).value = 'Datetime'
+	sheet.cell(row = 1,column = 4).value = 'Item'
+	sheet.cell(row = 1,column = 5).value = 'Price'
+	return sheet
+
+
+
+def make_excel_file(): #тут записываем в наш эксель покупки и сохраняем в файл
+	global row_to_write_sells
+	global remember_our_sells
+	book = openpyxl.load_workbook(r'C:\Users\Энчантикс\Desktop\Programming\Lab\02\excel\data.xlsx')
+	sheet = book.active
+	for sells in remember_our_sells:
+		for i in range(1,6):
+			sheet.cell(row_to_write_sells,i).value = sells[i]
+		row_to_write_sells+=1
+	for i in range (len(remember_our_sells)):
+			remember_our_sells.pop(i)
+	book.save(r'C:\Users\Энчантикс\Desktop\Programming\Lab\02\excel\data.xlsx')
+	book.close
+
+
+app = Flask(__name__)  
+@app.route('/', methods = ['POST', 'GET'])
+
+
+def index():
+	our_json= request.get_json()
+	global N
+	global remember_our_sells
+	now_time = datetime.datetime.now().time()
+	for sells in our_json['cart']:
+		temp.append(N)
+		temp.append(our_json['User_id'])
+		temp.append(now_time)
+		temp.append(sells['Item'])
+		temp.append(sells['Price'])
+		remember_our_sells.append(temp)
+		N += 1
+		N = str(N)
+	if len(remember_our_sells)>1000:
+		make_excel_file()
+	return 'OK'
+
+
+if __name__ == "__main__":
+	global N
+	global remember_our_sells
+	global row_to_write_sells
+	row_to_write_sells = 2
+	remember_our_sells = []
+	N = str(1)
+	check_file = os.path.exists(r'C:\Users\Энчантикс\Desktop\Programming\Lab\02\excel\data.xlsx')
+	if (check_file == False):  
+		book = openpyxl.Workbook()
+		sheet = book.active
+		sheet = make_book(sheet)
+		book.save(r'C:\Users\Энчантикс\Desktop\Programming\Lab\02\excel\data.xlsx')
+		book.close
+
+	book = openpyxl.load_workbook(r'C:\Users\Энчантикс\Desktop\Programming\Lab\02\excel\data.xlsx')
+	sheet = book.active
+	
+	now_time = datetime.datetime.now().time()
+	sheet.cell(row = 2,column = 1).value = N
+	sheet.cell(row = 2,column = 2).value = 'User ID'
+	sheet.cell(row = 2,column = 3).value = now_time
+	sheet.cell(row = 2,column = 4).value = 'хлеб'
+	sheet.cell(row = 2,column = 5).value = '45'
+	N = str(int(sheet.cell(row = sheet.max_row, column = 1).value) + 1)
+	sheet.cell(row = 3,column = 1).value = N
+	sheet.cell(row = 3,column = 2).value = 'User ID'
+	sheet.cell(row = 3,column = 3).value = now_time
+	sheet.cell(row = 3,column = 4).value = 'dfsfsdfsdfsdf'
+	sheet.cell(row = 3,column = 5).value = '878'  
+
+	book.save(r'C:\Users\Энчантикс\Desktop\Programming\Lab\02\excel\data.xlsx')
+	book.close
+	book.close
+
+	app.run()
+```
+
 
 
 
