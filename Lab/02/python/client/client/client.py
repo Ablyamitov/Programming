@@ -1,9 +1,9 @@
+
 import openpyxl
 from flask import Flask, request
-from datetime import datetime
+import datetime
 import json
 import os.path
-
 
 def make_book(sheet):
 	sheet.cell(row = 1,column = 1).value = 'N'
@@ -12,6 +12,7 @@ def make_book(sheet):
 	sheet.cell(row = 1,column = 4).value = 'Item'
 	sheet.cell(row = 1,column = 5).value = 'Price'
 	return sheet
+
 
 
 def make_excel_file(): #тут записываем в наш эксель покупки и сохраняем в файл
@@ -23,7 +24,7 @@ def make_excel_file(): #тут записываем в наш эксель по�
 		for i in range(1,6):
 			sheet.cell(row_to_write_sells,i).value = sells[i]
 		row_to_write_sells+=1
-	for i in range len(remember_our_sells):
+	for i in range (len(remember_our_sells)):
 			remember_our_sells.pop(i)
 	book.save('data.xlsx')
 	book.close
@@ -46,6 +47,7 @@ def index():
 		temp.append(sells['Price'])
 		remember_our_sells.append(temp)
 		N += 1
+		N = str(N)
 	if len(remember_our_sells)>1000:
 		make_excel_file()
 	return 'OK'
@@ -57,17 +59,36 @@ if __name__ == "__main__":
 	global row_to_write_sells
 	row_to_write_sells = 2
 	remember_our_sells = []
-	N = 1
+	N = str(1)
 	check_file = os.path.exists('data.xlsx')
-	if (check_file):    
-		book = openpyxl.load_workbook('data.xlsx')
-		sheet = book.active
-		N = int(sheet.cell(row = sheet.max_row, column = 1).value) + 1
-		book.close
-	else:
+	if (check_file == False):  
 		book = openpyxl.Workbook()
 		sheet = book.active
 		sheet = make_book(sheet)
 		book.save('data.xlsx')
 		book.close
+
+	book = openpyxl.load_workbook('data.xlsx')
+	sheet = book.active
+	"""
+	now_time = datetime.datetime.now().time()
+	sheet.cell(row = 2,column = 1).value = N
+	sheet.cell(row = 2,column = 2).value = 'User ID'
+	sheet.cell(row = 2,column = 3).value = now_time
+	sheet.cell(row = 2,column = 4).value = 'хлеб'
+	sheet.cell(row = 2,column = 5).value = '45'
+	N = str(int(sheet.cell(row = sheet.max_row, column = 1).value) + 1)
+	sheet.cell(row = 3,column = 1).value = N
+	sheet.cell(row = 3,column = 2).value = 'User ID'
+	sheet.cell(row = 3,column = 3).value = now_time
+	sheet.cell(row = 3,column = 4).value = 'dfsfsdfsdfsdf'
+	sheet.cell(row = 3,column = 5).value = '878'  """
+
+	book.save('data.xlsx')
+	book.close
+	book.close
+
 	app.run()
+
+
+		

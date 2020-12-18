@@ -60,7 +60,7 @@ std::string edit_webhook_template() {
     std::string one_piece_of_HTML;
     std::string full_piece_of_HTML;
 
-    if (write_config_file["webhooks"].size()!=0) {
+    if (write_config_file["webhooks"].size() != 0) {
         for (int i = 0; i < write_config_file["webhooks"].size(); i++) {
             one_piece_of_HTML = piece_of_HTML;
 
@@ -79,13 +79,12 @@ std::string edit_webhook_template() {
 }
 
 void edit_webhook_website(const Request& req, Response& res) {
-    bool if_webhook_already_exist;
+    bool if_webhook_already_exist = false;
     if (req.has_param("set")) {
 
         if (req.get_param_value("set") == "") {
         }
         else {
-            if_webhook_already_exist = false;
             write_config_file["webhooks"].size();
 
             for (int i = 0; i < write_config_file["webhooks"].size(); i++) {
@@ -131,16 +130,16 @@ void edit_webhook_website(const Request& req, Response& res) {
 
 void webhooks_post(const Request& req, Response& res) {
 
-    edit_webhook_website(req,res);
+    edit_webhook_website(req, res);
 
 
-    res.set_content(edit_webhook_template(), "how_to_write/html; charset=UTF-8");
+    res.set_content(edit_webhook_template(), "text/html; charset=UTF-8");
 
 }
 
 void webhooks_get(const Request& req, Response& res) {
 
-    res.set_content(edit_webhook_template(), "how_to_write/html");
+    res.set_content(edit_webhook_template(), "text/html");
 
 }
 
@@ -265,7 +264,7 @@ int main() {
 
     svr.Post("/webhooks", webhooks_post);
     svr.Get("/webhooks", webhooks_get);
-	svr.Post("/alice", alice);
+    svr.Post("/alice", alice);
     number++;
     write_in_txt_file << number << "." << u8" Сервер запущен" << std::endl;
 

@@ -1,5 +1,3 @@
 {
-    "webhooks": [
-        "http://7dc27002c27a.ngrok.io/"
-    ]
+    "webhooks": []
 }
