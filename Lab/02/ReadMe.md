@@ -55,4 +55,4 @@
 
 1. Скриншот со страницы настроек навыка:
 
-![]("C:\Users\Энчантикс\Desktop\Programming\Lab\02\icon\Navik.png")
+![]('C:\Users\Энчантикс\Desktop\Programming\Lab\02\icon\Navik.png')
