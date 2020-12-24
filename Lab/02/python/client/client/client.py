@@ -39,7 +39,7 @@ def index():		#обработчик
 	global N
 	global remember_our_sells
 	now_time = datetime.datetime.now().time()
-	for sells in our_json['count']:
+	for sells in our_json['check']:
 		temp.append(N)
 		temp.append(our_json['User_id'])
 		temp.append(now_time)
