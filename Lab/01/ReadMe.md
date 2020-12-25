@@ -47,8 +47,7 @@
 3. Составляем запрос (пункт II) для получения времени в Симферополе и изучаем формат ответа. Мой созданный запрос ```http://worldtimeapi.org/api/timezone/Europe/Simferopol```
 4. Создаём серверное приложение.
 Полный исходный код серверного приложения созданного мною:
-```
-с++
+```c++
 #include <iostream>
 #include <string>
 #include <nlohmann/json.hpp>
@@ -235,8 +234,7 @@ int main() {
 ```
 5. Создаём клиентское приложение.
 Полный исходный код клиентского приложения созданного мною:
-```
-python
+```python
 from tkinter import *
 import json
 import requests
