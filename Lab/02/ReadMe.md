@@ -86,8 +86,7 @@
 [excel файл](excel/data.xlsx)
 
 6. Полный код серверного приложения, который я успел написать:
-```
-c++
+```c++
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -364,8 +363,7 @@ int main() {
 
 7. Полный исходный код клиентского приложения:
 
-```
-python
+```python
 import openpyxl
 from flask import Flask, request
 import datetime
