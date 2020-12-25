@@ -453,8 +453,6 @@ if __name__ == "__main__":
 
 	book.save('..\..\..\excel\data.xlsx')
 	book.close
-	book.close
-
 	app.run()
 ```
 
