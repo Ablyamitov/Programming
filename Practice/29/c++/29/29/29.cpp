@@ -11,83 +11,91 @@
 #include<iomanip>
 
 using namespace std;
+
 struct Student
 {
-	std::string name;
+	string name;
 
 	int group;
 
-	std::map <std::string, int> exams;
+	map <string, int> exams;
 
 };
 
-ostream& operator << (ostream& out, Student student) {
-	out << "+------------+-------+------+------+------+------+\n"
-		<< "| Name       | Group | Math | Phys | Hist | Prog |\n"
-		<< "+------------+-------+------+------+------+------+\n"
-		<< "|" << setw(11) << student.name << " | " << student.group << " "
-		<< "    | " << student.exams.at("math")
-		<< "    | " << student.exams.at("phys")
-		<< "    | " << student.exams.at("hist")
-		<< "    | " << student.exams.at("prog")
-		<< "    |\n"
-		<< "+------------+-------+------+------+------+------+\n";
-	return out;
+bool operator > (Student one, Student two) {
+	return one.name > two.name;
 }
 
-ostream& operator << (ostream& out, std::vector<Student> allstruct)
+
+ostream& operator << (ostream& out, vector<Student> all_stupid_student)
 {
-	out << "+------------+-------+------+------+------+------+\n"
-		<< "| Name       | Group | Math | Phys | Hist | Prog |\n"
-		<< "+------------+-------+------+------+------+------+\n";
-	for (const auto& Student : allstruct) {
-		out << "|" << setw(11) << Student.name << " | " << Student.group << " "
-			<< "    | " << Student.exams.at("math")
-			<< "    | " << Student.exams.at("phys")
-			<< "    | " << Student.exams.at("hist")
-			<< "    | " << Student.exams.at("prog")
-			<< "    |\n"
-			<< "+------------+-------+------+------+------+------+\n";
+	out << "+------------+-------+------+------+------+------+" << endl << "| Name       | Group | Math | Phys | Hist | Prog |" << endl << "+------------+-------+------+------+------+------+"<<endl;
+	for (int i = 0;i< all_stupid_student.size();i++) {
+		out << "|"  << all_stupid_student[i].name << setw(14 - all_stupid_student[i].name.size()) << " | " << all_stupid_student[i].group << " "<< "    | " << all_stupid_student[i].exams["math"]<< "    | " << all_stupid_student[i].exams["phys"]<< "    | " << all_stupid_student[i].exams["hist"]<< "    | " << all_stupid_student[i].exams["prog"]<< "    |"<<endl<< "+------------+-------+------+------+------+------+"<<endl;
 	}
 	return out;
 }
 
-bool operator > (Student& a, Student& b) {
-	return a.name > b.name;
+ostream& operator << (ostream& out, Student random_stupid_student) {
+	out << "+------------+-------+------+------+------+------+"<<endl << "| Name       | Group | Math | Phys | Hist | Prog |" <<endl << "+------------+-------+------+------+------+------+"<<endl << "|"  << random_stupid_student.name << setw(14 - random_stupid_student.name.size()) << " | " << random_stupid_student.group << " " << "    | " << random_stupid_student.exams["math"] << "    | " << random_stupid_student.exams["phys"] << "    | " << random_stupid_student.exams["hist"] << "    | " << random_stupid_student.exams["prog"] << "    |"<<endl << "+------------+-------+------+------+------+------+"<<endl;
+	return out;
 }
 
-bool operator < (Student& a, Student& b) {
-	return a.name < b.name;
+
+template <class T>
+vector <T> BozoSort(vector<T>a) {
+	vector<T>forint;
+	for (int i = 0; i < a.size();i++) {
+		forint.push_back(a[i]);
+	}
+	bool sorted = false;
+	while (!sorted) {
+		int x1 = rand() % forint.size();
+		int x2 = rand() % forint.size();
+
+		T swap = forint[x1];
+		forint[x1] = forint[x2];
+		forint[x2] = swap;
+
+		sorted = true;
+		for (int i = 1; i < forint.size();i++) {
+			if (forint[i - 1] > forint[i]) {
+				sorted = false;
+				break;
+			}
+		}
+
+		return forint;
+	}
 }
 
 int main() {
 
-	
+	srand(time(NULL));
 
-	std::vector<Student> allstruct ;
+	vector<Student> all_student,who_have_two ;
 	Student one, two, three, four, five, six, seven, edge, nine, ten;
-	one.name = "one";
-	two.name = "two";
-	three.name = "three";
-	four.name = "four";
-	five.name = "five";
-	six.name = "six";
-	seven.name = "seven";
-	edge.name = "edge";
-	nine.name = "nine";
-	ten.name = "ten";
+	one.name = "habataitara";
+	two.name = "modora";
+	three.name = "nai";
+	four.name = "to";
+	five.name = "itte";
+	six.name = "mezashita";
+	seven.name = "no";
+	edge.name = "ha";
+	nine.name = "aoi";
+	ten.name = "ano";
 
-
-	one.group = 1;
+	one.group = 3;
 	two.group = 2;
 	three.group = 3;
-	four.group = 4;
-	five.group = 5;
-	six.group = 6;
-	seven.group = 7;
-	edge.group = 8;
-	nine.group = 9;
-	ten.group = 10;
+	four.group = 2;
+	five.group = 1;
+	six.group = 4;
+	seven.group = 1;
+	edge.group = 5;
+	nine.group = 4;
+	ten.group = 1;
 
 	one.exams["math"] = 5;
 	one.exams["phys"] = 5;
@@ -99,10 +107,10 @@ int main() {
 	two.exams["hist"] = 5;
 	two.exams["prog"] = 2;
 
-	three.exams["math"] = 4;
-	three.exams["phys"] = 4;
-	three.exams["hist"] = 4;
-	three.exams["prog"] = 3;
+	three.exams["math"] = 2;
+	three.exams["phys"] = 2;
+	three.exams["hist"] = 2;
+	three.exams["prog"] = 2;
 
 	four.exams["math"] = 3;
 	four.exams["phys"] = 5;
@@ -139,19 +147,59 @@ int main() {
 	ten.exams["hist"] =3;
 	ten.exams["prog"] =4;
 
+	all_student.push_back(one);
+	all_student.push_back(two);
+	all_student.push_back(three);
+	all_student.push_back(four);
+	all_student.push_back(five);
+	all_student.push_back(six);
+	all_student.push_back(seven);
+	all_student.push_back(edge);
+	all_student.push_back(nine);
+	all_student.push_back(ten);
+	
+	size_t number_of_students = all_student.size();
 
+	bool if_student_have_two = false;
 
-	allstruct.push_back(one);
-	allstruct.push_back(two);
-	allstruct.push_back(three);
-	allstruct.push_back(four);
-	allstruct.push_back(five);
-	allstruct.push_back(six);
-	allstruct.push_back(seven);
-	allstruct.push_back(edge);
-	allstruct.push_back(nine);
-	allstruct.push_back(ten);
-
+	for (int i = 0;i< number_of_students;i++)
+	{
+		if (all_student[i].exams["math"] == 2) {
+			if_student_have_two = true;
+			who_have_two.push_back(all_student[i]);
+			continue;
+		}
+		else if (all_student[i].exams["phys"] == 2){
+			if_student_have_two = true;
+			who_have_two.push_back(all_student[i]);
+			continue;
+		}
+		else if (all_student[i].exams["hist"] == 2) {
+			if_student_have_two = true;
+			who_have_two.push_back(all_student[i]);
+			continue;
+		}
+		else if (all_student[i].exams["prog"] == 2) {
+			if_student_have_two = true;
+			who_have_two.push_back(all_student[i]);
+			continue;
+		}
+	}
+	cout << endl;
+	int random_student = rand() % who_have_two.size();
+	if (if_student_have_two)
+	{
+		
+		cout << BozoSort(who_have_two);
+		cout << endl;
+		cout<< "Expulsion";
+		cout << endl << endl;
+		cout << who_have_two[random_student];
+	}
+	else
+	{
+		cout << "Not found";
+	}
 
 
 }

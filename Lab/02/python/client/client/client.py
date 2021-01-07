@@ -6,7 +6,7 @@ import json
 import os.path
 
 def make_book(sheet):
-	sheet.cell(row = 1,column = 1).value = 'N'
+	sheet['A1'].value = 'N'
 	sheet.cell(row = 1,column = 2).value = 'User ID'
 	sheet.cell(row = 1,column = 3).value = 'Datetime'
 	sheet.cell(row = 1,column = 4).value = 'Item'
