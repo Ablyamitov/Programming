@@ -1,27 +1,42 @@
 from tkinter import *
 from PIL import Image, ImageTk
-import random
+from random import randint
+import math as m
+images={
+'tileset_png' : "cell-bgr.png",
+'blue_png' : "ball-blue.png",
+'aqua_png' : "ball-aqua.png",
+'green_png' : "ball-green.png",
+'pink_png' : "ball-pink.png",
+'red_png' : "ball-red.png",
+'violet_png' : "ball-violet.png",
+'yellow_png' : "ball-yellow.png"
+}
 
-tileset_png = "cell-bgr.png"
-blue_png = "ball-blue.png"
-aqua_png = "ball-aqua.png"
-green_png = "ball-green.png"
-pink_png = "ball-pink.png"
-red_png = "ball-red.png"
-violet_png = "ball-violet.png"
-yellow_png = "ball-yellow.png"
 
-def make_tiles(x,y,lbls,number_tile, number_help):
+
+def gen_tiles(row,col,lbls,number_tile, number_help):
     
     lbls[number_tile].color = number_help
-    lbls[number_tile].row = x
-    lbls[number_tile].col = y
+    lbls[number_tile].row = row
+    lbls[number_tile].col = col
     lbls[number_tile].tile = number_tile
     lbls[number_tile].bind("<Button-1>", ball_active)
     lbls[number_tile].place(x=lbls[number_tile].row*70 + 10,y=lbls[number_tile].col*70 + 10)
     return lbls
 
-def clipping(img):
+def gen_tiles_2(row,col,lbls,number_tile, number_help):
+    
+    lbls[number_tile].color = number_help
+    lbls[number_tile].row = row
+    lbls[number_tile].col = col
+    lbls[number_tile].tile = number_tile
+    lbls[number_tile].bind("<Button-1>", ball_active)
+    lbls[number_tile].place(x=lbls[number_tile].row*70 + 10,y=lbls[number_tile].col*70 + 10)
+    return lbls
+
+
+def cropping(img):
     x1 = 1
     y1 = 0
     x2 = 67
@@ -29,7 +44,7 @@ def clipping(img):
     new_image = ImageTk.PhotoImage(img.crop((x1,y1,x2, y2)))
     return new_image
 
-def clipping2(img):
+def cropping_2(img):
     x1 = 1
     y1 = 69
     x2 = 67
@@ -39,14 +54,14 @@ def clipping2(img):
 
 
 def convert(convert_image):
-    global tileset_png;
+    global tileset_png
     bgr_image = Image.open(tileset_png).convert('RGBA')
     ball_color = Image.open(convert_image).convert('RGBA')
     bgr_image.paste(ball_color,(6,5),ball_color)
     return bgr_image
 
-def convert2(convert_image):
-    global tileset_png;
+def convert_2(convert_image):
+    global tileset_png
     bgr_image = Image.open(tileset_png).convert('RGBA')
     ball_color = Image.open(convert_image).convert('RGBA')
     bgr_image.paste(ball_color,(6,74),ball_color)
@@ -57,12 +72,13 @@ def convert2(convert_image):
 def if_game_start():
     global lbls
     lbls=[]
-    global close_tiles
-    global first_color, second_color, third_color
-    first_color = random.randint(0,6)
-    second_color = random.randint(0,6)
-    third_color = random.randint(0,6)
-    close_tiles=[0]*81
+    global where_balls
+    global help_first_color, help_second_color, help_third_color
+    help_first_color = randint(0,6) #help
+    help_second_color = randint(0,6)
+    help_third_color = randint(0,6)
+    where_balls=[0]*81
+    color_balls = where_balls
     lbl_num=0
     for row in range(9):
         for col in range(9):
@@ -78,30 +94,102 @@ def if_game_start():
             lbl_num+=1
 
 def if_game_restart(event):
-    global clicked
+    global if_pressed
     global lbls
+    global lose_label
     lbls.clear()
     if_game_start()
-    set_balls()
-    clicked=False
+    gen_balls()
+    if_pressed=False
+    lose_label.destroy()
 
-def if_new_game(event):
-    global clicked
-    global lbls
-    global lbl_looser
-    lbl_looser.destroy()
-    lbls.clear()
-    if_game_start()
-    set_balls()
-    clicked=False
+
 
 def check_lines_horizontal():
+    global img_tileset
     global lbls
+    same_color=[]
+    same_color.append(lbls[0])
+    for i in range(1,81):
+        if (i%9==0) and (i!=0):
+            if len(same_color)>4:
+                for j in range(len(same_color)):
+                    same_color[j].config(image=img_tileset)
+                    same_color[j].color = -1
+                    same_color[j].used = False
+                    
+            same_color.clear()
+            same_color.append(lbls[i])
+        if lbls[i].color == lbls[i-1].color:
+            same_color.append(lbls[i])
+        else:
+            if len(same_color)>4:
+                for j in range(len(same_color)):
+                    same_color[j].config(image=img_tileset)
+                    same_color[j].color = -1
+                    same_color[j].used = False
+            same_color.clear()
+            same_color.append(lbls[i])
+        if(i == 80) and (len(same_color)>4):
+            for j in range(len(same_color)):
+                    same_color[j].config(image=img_tileset)
+                    same_color[j].color = -1
+                    same_color[j].used = False
+            same_color.clear()
 
-clicked=False
+
+def check_lines_vertical():
+    global lbls
+    global img_tileset
+    matrix_lbl=[]
+    index = 0
+    for i in range (9):
+        temp =[]
+        for j in range(9):
+            temp.append(lbls[index])
+            index +=1
+        matrix_lbl.append(temp)
+    same_color=[]
+    for row in range (9):
+        same_color.append(matrix_lbl[0][row])
+        for col in range (1,9):
+            #if (col==1) :
+            #    if len(same_color)>4:
+            #        for j in range(len(same_color)):
+            #            same_color[j].config(image=img_tile)
+            #            same_color[j].color = -1
+            #            same_color[j].used = False
+                    
+            #    same_color.clear()
+            #    same_color.append(matrix_lbl[col][row])
+            #elif len(same_color)>4:
+            #    same_color.clear()
+            #    same_color.append(matrix_lbl[col][row])
+
+            if(matrix_lbl[col][row].color==matrix_lbl[col-1][row].color):
+                same_color.append(matrix_lbl[col][row])
+            else:
+                if len(same_color)>4:
+                    for j in range(len(same_color)):
+                        same_color[j].config(image=img_tileset)
+                        same_color[j].color = -1
+                        same_color[j].used = False
+                same_color.clear()
+                same_color.append(matrix_lbl[col][row])
+            if(col==8) and (len(same_color)>4):
+                for j in range(len(same_color)):
+                    same_color[j].config(image=img_tileset)
+                    same_color[j].color = -1
+                    same_color[j].used = False
+                same_color.clear()
+            if(col == 8):
+                same_color.clear()
+    
+
+if_pressed=False
 def ball_active(event):
-    global clicked
-    global close_tiles
+    global if_pressed
+    global where_balls
     global number_ball_to_move
     global img_tileset
     global lbls
@@ -109,30 +197,30 @@ def ball_active(event):
     global ball_active_color
     global active_balls
     global balls
-    if clicked==False:
+    if if_pressed==False:
         if event.widget.color != -1:
             event.widget.config(image=active_balls[event.widget.color])
             active_tile_num = event.widget.tile
             ball_active_color = event.widget.color
-            clicked = True
-    if clicked==True:
+            if_pressed = True
+    if if_pressed==True:
         if event.widget.color == -1:
-            close_tiles[event.widget.tile] = 1
-            close_tiles[active_tile_num] = 0
+            where_balls[event.widget.tile] = 1
+            where_balls[active_tile_num] = 0
             event.widget.config(image=balls[ball_active_color])
             event.widget.color=ball_active_color
             lbls[active_tile_num].config(image=img_tileset)
             lbls[active_tile_num].color = -1
-            clicked=False
-            set_balls()
+            if_pressed=False
+            gen_balls()
         else:
             if event.widget.tile != active_tile_num:
                 lbls[active_tile_num].config(image=balls[ball_active_color])
                 event.widget.config(image=active_balls[event.widget.color])
                 active_tile_num = event.widget.tile
                 ball_active_color = event.widget.color
-def if_click(event):
-    set_balls()
+def press(event):
+    gen_balls()
     
 def set_img_tileset_2(event):
     event.widget.config(image=img_tileset_2)
@@ -144,55 +232,65 @@ def update_score():
     global score, points
     score.config(text=points)
     
-close_tiles=[0]*81
-def set_balls():
-    global close_tiles
+where_balls=[0]*81
+color_balls = where_balls
+def gen_balls():
+    global color_balls
+    global where_balls
     global lbls
-    global first_color, second_color, third_color
-    global lbl_looser
+    global help_first_color, help_second_color, help_third_color
+    global lose_label
     global balls
-    random_color1, random_color2, random_color3 = random.randint(0,6),random.randint(0,6),random.randint(0,6)
+
     while(True):
-        first_tile = random.randint(0,80)
-        second_tile = random.randint(0,80)
-        third_tile = random.randint(0,80)
-        if (close_tiles[first_tile]==0) and (close_tiles[second_tile]==0) and (close_tiles[third_tile]==0) and (first_tile!=second_tile) and (first_tile!=third_tile) and (second_tile!=third_tile):
+        first_tile = randint(0,80)
+        second_tile = randint(0,80)
+        third_tile = randint(0,80)
+        if (where_balls[first_tile]==0) and (where_balls[second_tile]==0) and (where_balls[third_tile]==0) and (first_tile!=second_tile) and (first_tile!=third_tile) and (second_tile!=third_tile):
             break
+    row_1 = lbls[first_tile].row
+    col_1 = lbls[first_tile].col
+    row_2 = lbls[second_tile].row
+    col_2 = lbls[second_tile].col
+    row_3 = lbls[third_tile].row
+    col_3 = lbls[third_tile].col
 
-    x_1 = lbls[first_tile].row
-    y_1 = lbls[first_tile].col
-    x_2 = lbls[second_tile].row
-    y_2 = lbls[second_tile].col
-    x_3 = lbls[third_tile].row
-    y_3 = lbls[third_tile].col
+    lbls[first_tile] = Label(root, image=balls[help_first_color], borderwidth=0)
+    lbls = gen_tiles(row_1,col_1,lbls,first_tile,help_first_color)
 
-    lbls[first_tile] = Label(root, image=balls[first_color], borderwidth=0)
-    lbls = make_tiles(x_1,y_1,lbls,first_tile,first_color)
+    lbls[second_tile] = Label(root, image=balls[help_second_color], borderwidth=0)
+    lbls = gen_tiles(row_2,col_2,lbls,second_tile,help_second_color)
 
-    lbls[second_tile] = Label(root, image=balls[second_color], borderwidth=0)
-    lbls = make_tiles(x_2,y_2,lbls,second_tile,second_color)
+    lbls[third_tile] = Label(root, image=balls[help_third_color], borderwidth=0)
+    lbls = gen_tiles(row_3,col_3,lbls,third_tile,help_third_color) 
 
-    lbls[third_tile] = Label(root, image=balls[third_color], borderwidth=0)
-    lbls = make_tiles(x_3,y_3,lbls,third_tile,third_color) 
+    where_balls[first_tile]=1
+    where_balls[second_tile]=1
+    where_balls[third_tile]=1
 
-    close_tiles[first_tile]=1
-    close_tiles[second_tile]=1
-    close_tiles[third_tile]=1
+    color_balls[first_tile] = help_first_color
+    color_balls[second_tile] = help_second_color
+    color_balls[third_tile] = help_third_color
+
+    check_lines_horizontal()
+    check_lines_vertical()
+
+
     #print(first_tile,lbls[first_tile].row, lbls[first_tile].col)
-    first_color,second_color,third_color=random.randint(0,6),random.randint(0,6),random.randint(0,6)
-    first_color_lbl=Label(root,image=balls[first_color], borderwidth=0)
-    first_color_lbl.place(x=650, y=290)
-    second_color_lbl=Label(root,image=balls[second_color], borderwidth=0)
-    second_color_lbl.place(x=730, y=290)
-    third_color_lbl=Label(root,image=balls[third_color], borderwidth=0)
-    third_color_lbl.place(x=810, y=290)
-    sum=0
+    help_first_color,help_second_color,help_third_color=randint(0,6),randint(0,6),randint(0,6)
+    help_first_color_lbl=Label(root,image=balls[help_first_color], borderwidth=0)
+    help_first_color_lbl.place(x=650, y=290)
+    help_second_color_lbl=Label(root,image=balls[help_second_color], borderwidth=0)
+    help_second_color_lbl.place(x=730, y=290)
+    help_third_color_lbl=Label(root,image=balls[help_third_color], borderwidth=0)
+    help_third_color_lbl.place(x=810, y=290)
+    busy=0
     for i in range(81):
-        sum+=close_tiles[i]
-        if sum >= 80:
-            lbl_looser=Label(root, text="4el, ti...", font=("Arial", 26), bg="#414141", fg="white")
-            lbl_looser.bind("<Button-1>", if_new_game)
-            lbl_looser.place(x=650,y=600)
+        busy+=where_balls[i]
+        if busy > 80:
+            lose_label=Label(root, text="Увы, но вы проиграли.", font=("Arial", 20), bg="#414141", fg="white")
+            lose_label.place(x=650,y=600)
+    
 
 
 root = Tk()
@@ -209,7 +307,7 @@ score=Label(root, text=points, font=("Arial", 26), bg="#414141", fg="white")
 new_game_label = Label(root,text="Новая игра", font=("Arial", 26), bg="#414141", fg="white")
 next_move_label=Label(root,text="Сделать ход", font=("Arial", 24), bg="#414141", fg="white")
 new_game_label.bind("<Button-1>", if_game_restart)
-next_move_label.bind("<Button-1>", if_click)
+next_move_label.bind("<Button-1>", press)
 
 name.place(x=650, y=25)
 point.place(x=650, y=90)
@@ -218,63 +316,65 @@ score.place(x=750, y=90)
 new_game_label.place(x=650, y=370)
 next_move_label.place(x=650, y=440)
 
-tileset = Image.open(tileset_png)
-img_tileset = clipping(tileset)
-img_tileset_2 = clipping2(tileset)
+tileset_png = images['tileset_png']
+tileset = Image.open(images['tileset_png'])
+img_tileset = cropping(tileset)
+img_tileset_2 = cropping_2(tileset)
+
 
 
 balls = []
 active_balls = []
 #РАБОТАЕМ С КАРТИНКАМИ
-bgr_blue = convert(blue_png)
-img_blue = clipping(bgr_blue)
+bgr_blue = convert(images['blue_png'])
+img_blue = cropping(bgr_blue)
 balls.append(img_blue)
-bgr_blue_active = convert2(blue_png)
-img_blue_active = clipping2(bgr_blue_active)
-active_balls.append(img_blue_active)
+bgr_blue_2 = convert_2(images['blue_png'])
+img_blue_2 = cropping_2(bgr_blue_2)
+active_balls.append(img_blue_2)
 
-bgr_aqua = convert(aqua_png)
-img_aqua = clipping(bgr_aqua)
+bgr_aqua = convert(images['aqua_png'])
+img_aqua = cropping(bgr_aqua)
 balls.append(img_aqua)
-bgr_aqua_active = convert2(aqua_png)
-img_aqua_active = clipping2(bgr_aqua_active)
-active_balls.append(img_aqua_active)
+bgr_aqua_2 = convert_2(images['aqua_png'])
+img_aqua_2 = cropping_2(bgr_aqua_2)
+active_balls.append(img_aqua_2)
 
-bgr_green = convert(green_png)
-img_green = clipping(bgr_green)
+bgr_green = convert(images['green_png'])
+img_green = cropping(bgr_green)
 balls.append(img_green)
-bgr_green_active = convert2(green_png)
-img_green_active = clipping2(bgr_green_active)
-active_balls.append(img_green_active)
+bgr_green_2 = convert_2(images['green_png'])
+img_green_2 = cropping_2(bgr_green_2)
+active_balls.append(img_green_2)
 
-bgr_pink = convert(pink_png)
-img_pink =clipping(bgr_pink)
+bgr_pink = convert(images['pink_png'])
+img_pink =cropping(bgr_pink)
 balls.append(img_pink)
-bgr_pink_active = convert2(pink_png)
-img_pink_active = clipping2(bgr_pink_active)
-active_balls.append(img_pink_active)
+bgr_pink_2 = convert_2(images['pink_png'])
+img_pink_2 = cropping_2(bgr_pink_2)
+active_balls.append(img_pink_2)
 
-bgr_red = convert(red_png)
-img_red = clipping(bgr_red)
+bgr_red = convert(images['red_png'])
+img_red = cropping(bgr_red)
 balls.append(img_red)
-bgr_red_active = convert2(red_png)
-img_red_active = clipping2(bgr_red_active)
-active_balls.append(img_red_active)
+bgr_red_2 = convert_2(images['red_png'])
+img_red_2 = cropping_2(bgr_red_2)
+active_balls.append(img_red_2)
 
-bgr_violet = convert(violet_png)
-img_violet = clipping(bgr_violet)
+bgr_violet = convert(images['violet_png'])
+img_violet = cropping(bgr_violet)
 balls.append(img_violet)
-bgr_violet_active = convert2(violet_png)
-img_violet_active = clipping2(bgr_violet_active)
-active_balls.append(img_violet_active)
+bgr_violet_2 = convert_2(images['violet_png'])
+img_violet_2 = cropping_2(bgr_violet_2)
+active_balls.append(img_violet_2)
 
-bgr_yellow = convert(yellow_png)
-img_yellow = clipping(bgr_yellow)
+bgr_yellow = convert(images['yellow_png'])
+img_yellow = cropping(bgr_yellow)
 balls.append(img_yellow)
-bgr_yellow_active = convert(yellow_png)
-img_yellow_active = clipping2(bgr_yellow_active)
-active_balls.append(img_yellow_active)
+bgr_yellow_2 = convert(images['yellow_png'])
+img_yellow_2 = cropping_2(bgr_yellow_2)
+active_balls.append(img_yellow_2)
 
 if_game_start()
-set_balls()
+gen_balls()
 root.mainloop()
