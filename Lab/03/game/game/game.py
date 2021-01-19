@@ -101,11 +101,99 @@ def if_game_restart(event):
     if_game_start()
     gen_balls()
     if_pressed=False
+    #lose_label.config(text="")
     lose_label.destroy()
 
 
 
+def check_lines_diagonal(k):
+    global points
+    global img_tileset
+    global lbls
+    same_color=[]
+    i = k
+    for i in range(i,81,10):
+        if(i < 18):
+            k = i
+            same_color.append(lbls[i-10])
+        if lbls[i].color == lbls[i-10].color:
+            same_color.append(lbls[i])
+        else:
+            if len(same_color)>4:
+                for j in range(len(same_color)):
+                    if(same_color[j].color != -1):
+                        points = points + 2
+                        update_score()
+                    same_color[j].config(image=img_tileset)
+                    same_color[j].color = -1
+                    same_color[j].used = False
+            same_color.clear()
+            same_color.append(lbls[i])
+        if(i > 71) and (len(same_color)>4):
+            for j in range(len(same_color)):
+                if(same_color[j].color != -1):
+                    points = points + 2
+                    update_score()
+                same_color[j].config(image=img_tileset)
+                same_color[j].color = -1
+                same_color[j].used = False
+            same_color.clear()
+    if(k < 81):
+        check_lines_diagonal(k+1)
+
+
+def check_lines_diagonal_back(k):
+    global points
+    global img_tileset
+    global lbls
+    same_color=[]
+    i = k
+    for i in range(i,-1,-8):
+        if(i > 62 and i!=63):
+            k = i
+            same_color.append(lbls[i+8])
+        #if(i % 9 ==0):
+        #    continue
+        if lbls[i].color == lbls[i+8].color:
+            same_color.append(lbls[i])
+        else:
+            if len(same_color)>4:
+                for j in range(len(same_color)):
+                    if(same_color[j].color != -1):
+                        points = points + 2
+                        update_score()
+                    same_color[j].config(image=img_tileset)
+                    same_color[j].color = -1
+                    same_color[j].used = False
+            same_color.clear()
+            same_color.append(lbls[i])
+        if(i < 9) and (len(same_color)>4):
+            for j in range(len(same_color)):
+                if(same_color[j].color != -1):
+                    points = points + 2
+                    update_score()
+                same_color[j].config(image=img_tileset)
+                same_color[j].color = -1
+                same_color[j].used = False
+            same_color.clear()
+        if(i % 9 ==8)and (len(same_color)>4):
+            for j in range(len(same_color)):
+                if(same_color[j].color != -1):
+                    points = points + 2
+                    update_score()
+                same_color[j].config(image=img_tileset)
+                same_color[j].color = -1
+                same_color[j].used = False
+            same_color.clear()
+        if(i%9 == 8):
+            break
+    if(k > -1):
+        check_lines_diagonal_back(k-1) 
+
+
 def check_lines_horizontal():
+    global points
+    global score
     global img_tileset
     global lbls
     same_color=[]
@@ -114,6 +202,9 @@ def check_lines_horizontal():
         if (i%9==0) and (i!=0):
             if len(same_color)>4:
                 for j in range(len(same_color)):
+                    if(same_color[j].color != -1):
+                        points = points + 2
+                        update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
                     same_color[j].used = False
@@ -125,6 +216,9 @@ def check_lines_horizontal():
         else:
             if len(same_color)>4:
                 for j in range(len(same_color)):
+                    if(same_color[j].color != -1):
+                        points = points + 2
+                        update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
                     same_color[j].used = False
@@ -132,13 +226,17 @@ def check_lines_horizontal():
             same_color.append(lbls[i])
         if(i == 80) and (len(same_color)>4):
             for j in range(len(same_color)):
-                    same_color[j].config(image=img_tileset)
-                    same_color[j].color = -1
-                    same_color[j].used = False
+                if(same_color[j].color != -1):
+                    points = points + 2
+                    update_score()
+                same_color[j].config(image=img_tileset)
+                same_color[j].color = -1
+                same_color[j].used = False
             same_color.clear()
 
 
 def check_lines_vertical():
+    global points
     global lbls
     global img_tileset
     matrix_lbl=[]
@@ -171,6 +269,9 @@ def check_lines_vertical():
             else:
                 if len(same_color)>4:
                     for j in range(len(same_color)):
+                        if(same_color[j].color != -1):
+                            points = points + 2
+                            update_score()
                         same_color[j].config(image=img_tileset)
                         same_color[j].color = -1
                         same_color[j].used = False
@@ -178,6 +279,9 @@ def check_lines_vertical():
                 same_color.append(matrix_lbl[col][row])
             if(col==8) and (len(same_color)>4):
                 for j in range(len(same_color)):
+                    if(same_color[j].color != -1):
+                        points = points + 2
+                        update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
                     same_color[j].used = False
@@ -274,6 +378,8 @@ def gen_balls():
 
     check_lines_horizontal()
     check_lines_vertical()
+    check_lines_diagonal(9)
+    check_lines_diagonal_back(70)
 
 
     #print(first_tile,lbls[first_tile].row, lbls[first_tile].col)
@@ -288,14 +394,14 @@ def gen_balls():
     for i in range(81):
         busy+=where_balls[i]
         if busy > 80:
-            lose_label=Label(root, text="Увы, но вы проиграли.", font=("Arial", 20), bg="#414141", fg="white")
+            lose_label=Label(root, text="Вы проиграли", font=("Arial", 20), bg="#414141", fg="white")
             lose_label.place(x=650,y=600)
     
 
 
 root = Tk()
 root.configure(bg="#2F4F4F")
-root.geometry("940x720")
+root.geometry("900x646")
 
 points=0
 name=Label(root, text="Шарики", font=("Arial", 26), bg="#414141", fg="white")
