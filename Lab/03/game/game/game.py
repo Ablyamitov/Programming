@@ -127,7 +127,7 @@ def check_lines_diagonal(k):
                     update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
-                    same_color[j].used = False
+                    
             same_color.clear()
             same_color.append(lbls[i])
         if lbls[i].color == lbls[i-10].color:
@@ -140,7 +140,7 @@ def check_lines_diagonal(k):
                         update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
-                    same_color[j].used = False
+                    
             same_color.clear()
             same_color.append(lbls[i])
         if(i > 71) and (len(same_color)==5):
@@ -150,7 +150,7 @@ def check_lines_diagonal(k):
                     update_score()
                 same_color[j].config(image=img_tileset)
                 same_color[j].color = -1
-                same_color[j].used = False
+                
             same_color.clear()
     if(k < 81):
         check_lines_diagonal(k+1)
@@ -170,7 +170,7 @@ def check_lines_diagonal_back(k):
                     update_score()
                 same_color[j].config(image=img_tileset)
                 same_color[j].color = -1
-                same_color[j].used = False
+                
             same_color.clear()
             same_color.append(lbls[i])
         if(i > 62 and i!=63):
@@ -188,7 +188,7 @@ def check_lines_diagonal_back(k):
                         update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
-                    same_color[j].used = False
+                    
             same_color.clear()
             same_color.append(lbls[i])
         if(i < 9) and (len(same_color)==5):
@@ -198,7 +198,7 @@ def check_lines_diagonal_back(k):
                     update_score()
                 same_color[j].config(image=img_tileset)
                 same_color[j].color = -1
-                same_color[j].used = False
+                
             same_color.clear()
         if(i % 9 ==8)and (len(same_color)==5):
             for j in range(len(same_color)):
@@ -207,7 +207,7 @@ def check_lines_diagonal_back(k):
                     update_score()
                 same_color[j].config(image=img_tileset)
                 same_color[j].color = -1
-                same_color[j].used = False
+                
             same_color.clear()
         if(i%9 == 8):
             break
@@ -230,7 +230,7 @@ def check_lines_horizontal():
                     update_score()
                 same_color[j].config(image=img_tileset)
                 same_color[j].color = -1
-                same_color[j].used = False
+                
             same_color.clear()
             same_color.append(lbls[i])
         if (i%9==0) and (i!=0):
@@ -241,7 +241,7 @@ def check_lines_horizontal():
                         update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
-                    same_color[j].used = False
+                    
                     
             same_color.clear()
             same_color.append(lbls[i])
@@ -255,7 +255,7 @@ def check_lines_horizontal():
                         update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
-                    same_color[j].used = False
+                    
             same_color.clear()
             same_color.append(lbls[i])
         if(i == 80) and (len(same_color)==5):
@@ -265,7 +265,7 @@ def check_lines_horizontal():
                     update_score()
                 same_color[j].config(image=img_tileset)
                 same_color[j].color = -1
-                same_color[j].used = False
+                
             same_color.clear()
 
 
@@ -292,7 +292,7 @@ def check_lines_vertical():
                         update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
-                    same_color[j].used = False
+                    
                 same_color.clear()
                 same_color.append(matrix_lbl[col][row])
             #if (col==1) :
@@ -300,7 +300,7 @@ def check_lines_vertical():
             #        for j in range(len(same_color)):
             #            same_color[j].config(image=img_tile)
             #            same_color[j].color = -1
-            #            same_color[j].used = False
+            #            
                     
             #    same_color.clear()
             #    same_color.append(matrix_lbl[col][row])
@@ -318,7 +318,7 @@ def check_lines_vertical():
                             update_score()
                         same_color[j].config(image=img_tileset)
                         same_color[j].color = -1
-                        same_color[j].used = False
+                        
                 same_color.clear()
                 same_color.append(matrix_lbl[col][row])
             if(col==8) and (len(same_color)==5):
@@ -328,7 +328,7 @@ def check_lines_vertical():
                         update_score()
                     same_color[j].config(image=img_tileset)
                     same_color[j].color = -1
-                    same_color[j].used = False
+                    
                 same_color.clear()
             if(col == 8):
                 same_color.clear()
