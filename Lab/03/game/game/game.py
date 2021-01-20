@@ -70,11 +70,14 @@ def convert_2(convert_image):
 
 
 def if_game_start():
+    global points 
+    points = 0
+    update_score()
     global lbls
     lbls=[]
     global where_balls
     global help_first_color, help_second_color, help_third_color
-    help_first_color = randint(0,6) #help
+    help_first_color = randint(0,6) 
     help_second_color = randint(0,6)
     help_third_color = randint(0,6)
     where_balls=[0]*81
