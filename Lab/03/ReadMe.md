@@ -61,5 +61,5 @@
  
  Рисунок 1. Скриншот работы игры.
  
- 2. [ссылка]https://github.com/Ablyamitov/Programming/blob/master/Lab/03/game/game/game.py
+ 2. [ссылка][https://github.com/Ablyamitov/Programming/blob/master/Lab/03/game/game/game.py]
 
