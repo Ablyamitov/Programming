@@ -368,6 +368,9 @@ def ball_active(event):
                 active_tile_num = event.widget.tile
                 ball_active_color = event.widget.color
 def press(event):
+    global busy 
+    if busy>78:
+        return 0
     gen_balls()
     
 def set_img_tileset_2(event):
@@ -426,7 +429,7 @@ def gen_balls():
     check_lines_diagonal_back(70)
 
 
-    #print(first_tile,lbls[first_tile].row, lbls[first_tile].col)
+
     help_first_color,help_second_color,help_third_color=randint(0,6),randint(0,6),randint(0,6)
     help_first_color_lbl=Label(root,image=balls[help_first_color], borderwidth=0)
     help_first_color_lbl.place(x=650, y=290)
@@ -434,14 +437,16 @@ def gen_balls():
     help_second_color_lbl.place(x=730, y=290)
     help_third_color_lbl=Label(root,image=balls[help_third_color], borderwidth=0)
     help_third_color_lbl.place(x=810, y=290)
+    global busy
     busy=0
     for i in range(81):
-        if(lbls[i].color == -1):
+        if(lbls[i].color != -1):
             busy+=1
             if busy > 78:
                 lose_label=Label(root, text="Вы проиграли", font=("Arial", 20), bg="#414141", fg="white")
                 lose_label.place(x=650,y=600)
-    
+    print(busy)
+
 
 
 root = Tk()
