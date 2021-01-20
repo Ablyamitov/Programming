@@ -119,10 +119,21 @@ def check_lines_diagonal(k):
         if(i < 18):
             k = i
             same_color.append(lbls[i-10])
+
+        if len(same_color)==5:
+            for j in range(len(same_color)):
+                if(same_color[j].color != -1):
+                    points = points + 2
+                    update_score()
+                    same_color[j].config(image=img_tileset)
+                    same_color[j].color = -1
+                    same_color[j].used = False
+            same_color.clear()
+            same_color.append(lbls[i])
         if lbls[i].color == lbls[i-10].color:
             same_color.append(lbls[i])
         else:
-            if len(same_color)>4:
+            if len(same_color)==5:
                 for j in range(len(same_color)):
                     if(same_color[j].color != -1):
                         points = points + 2
@@ -132,7 +143,7 @@ def check_lines_diagonal(k):
                     same_color[j].used = False
             same_color.clear()
             same_color.append(lbls[i])
-        if(i > 71) and (len(same_color)>4):
+        if(i > 71) and (len(same_color)==5):
             for j in range(len(same_color)):
                 if(same_color[j].color != -1):
                     points = points + 2
@@ -152,6 +163,16 @@ def check_lines_diagonal_back(k):
     same_color=[]
     i = k
     for i in range(i,-1,-8):
+        if len(same_color)==5:
+            for j in range(len(same_color)):
+                if(same_color[j].color != -1):
+                    points = points + 2
+                    update_score()
+                same_color[j].config(image=img_tileset)
+                same_color[j].color = -1
+                same_color[j].used = False
+            same_color.clear()
+            same_color.append(lbls[i])
         if(i > 62 and i!=63):
             k = i
             same_color.append(lbls[i+8])
@@ -160,7 +181,7 @@ def check_lines_diagonal_back(k):
         if lbls[i].color == lbls[i+8].color:
             same_color.append(lbls[i])
         else:
-            if len(same_color)>4:
+            if len(same_color)==5:
                 for j in range(len(same_color)):
                     if(same_color[j].color != -1):
                         points = points + 2
@@ -170,7 +191,7 @@ def check_lines_diagonal_back(k):
                     same_color[j].used = False
             same_color.clear()
             same_color.append(lbls[i])
-        if(i < 9) and (len(same_color)>4):
+        if(i < 9) and (len(same_color)==5):
             for j in range(len(same_color)):
                 if(same_color[j].color != -1):
                     points = points + 2
@@ -179,7 +200,7 @@ def check_lines_diagonal_back(k):
                 same_color[j].color = -1
                 same_color[j].used = False
             same_color.clear()
-        if(i % 9 ==8)and (len(same_color)>4):
+        if(i % 9 ==8)and (len(same_color)==5):
             for j in range(len(same_color)):
                 if(same_color[j].color != -1):
                     points = points + 2
@@ -202,8 +223,18 @@ def check_lines_horizontal():
     same_color=[]
     same_color.append(lbls[0])
     for i in range(1,81):
+        if len(same_color)==5:
+            for j in range(len(same_color)):
+                if(same_color[j].color != -1):
+                    points = points + 2
+                    update_score()
+                same_color[j].config(image=img_tileset)
+                same_color[j].color = -1
+                same_color[j].used = False
+            same_color.clear()
+            same_color.append(lbls[i])
         if (i%9==0) and (i!=0):
-            if len(same_color)>4:
+            if len(same_color)==5:
                 for j in range(len(same_color)):
                     if(same_color[j].color != -1):
                         points = points + 2
@@ -217,7 +248,7 @@ def check_lines_horizontal():
         if lbls[i].color == lbls[i-1].color:
             same_color.append(lbls[i])
         else:
-            if len(same_color)>4:
+            if len(same_color)==5:
                 for j in range(len(same_color)):
                     if(same_color[j].color != -1):
                         points = points + 2
@@ -227,7 +258,7 @@ def check_lines_horizontal():
                     same_color[j].used = False
             same_color.clear()
             same_color.append(lbls[i])
-        if(i == 80) and (len(same_color)>4):
+        if(i == 80) and (len(same_color)==5):
             for j in range(len(same_color)):
                 if(same_color[j].color != -1):
                     points = points + 2
@@ -254,6 +285,16 @@ def check_lines_vertical():
     for row in range (9):
         same_color.append(matrix_lbl[0][row])
         for col in range (1,9):
+            if len(same_color)==5:
+                for j in range(len(same_color)):
+                    if(same_color[j].color != -1):
+                        points = points + 2
+                        update_score()
+                    same_color[j].config(image=img_tileset)
+                    same_color[j].color = -1
+                    same_color[j].used = False
+                same_color.clear()
+                same_color.append(matrix_lbl[col][row])
             #if (col==1) :
             #    if len(same_color)>4:
             #        for j in range(len(same_color)):
@@ -270,7 +311,7 @@ def check_lines_vertical():
             if(matrix_lbl[col][row].color==matrix_lbl[col-1][row].color):
                 same_color.append(matrix_lbl[col][row])
             else:
-                if len(same_color)>4:
+                if len(same_color)==5:
                     for j in range(len(same_color)):
                         if(same_color[j].color != -1):
                             points = points + 2
@@ -280,7 +321,7 @@ def check_lines_vertical():
                         same_color[j].used = False
                 same_color.clear()
                 same_color.append(matrix_lbl[col][row])
-            if(col==8) and (len(same_color)>4):
+            if(col==8) and (len(same_color)==5):
                 for j in range(len(same_color)):
                     if(same_color[j].color != -1):
                         points = points + 2
