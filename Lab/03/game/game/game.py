@@ -395,10 +395,11 @@ def gen_balls():
     help_third_color_lbl.place(x=810, y=290)
     busy=0
     for i in range(81):
-        busy+=where_balls[i]
-        if busy > 80:
-            lose_label=Label(root, text="Вы проиграли", font=("Arial", 20), bg="#414141", fg="white")
-            lose_label.place(x=650,y=600)
+        if(lbls[i].color == -1):
+            busy+=1
+            if busy > 78:
+                lose_label=Label(root, text="Вы проиграли", font=("Arial", 20), bg="#414141", fg="white")
+                lose_label.place(x=650,y=600)
     
 
 
