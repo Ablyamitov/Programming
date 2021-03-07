@@ -97,8 +97,8 @@ int main() {
 ```
 
 В режиме откладки переменные i и d в 6 строке равны:
-
-<p align="center"> ![](icon/line6.png)
+<p align="center">
+![](icon/line6.png)
 
 <p align="center">Рисунок 2. Переменные i и d в 6 строке.
 
