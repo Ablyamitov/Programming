@@ -30,7 +30,7 @@ int get(IntArray* arr, int index) {
 		cout << "Error";
 		exit(0);
 	}
-	return 0;
+	return arr->data[index];
 };
 
 
@@ -41,7 +41,7 @@ int get(IntArray& arr, int index) {
 	}
 	return arr.data[index];*/
 	get(&arr, index);
-	return 0;
+	return arr.data[index];
 };
 
 void set(IntArray* arr, int index, int value) {
