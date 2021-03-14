@@ -1,9 +1,10 @@
 _print = print
 def create(n,x0,d):
-    arr.append(x0)
-    for i in range(1,n):
-        arr.append(arr[i-1]+d)
-    return arr
+	arr = []
+	arr.append(x0)
+	for i in range(1,n):
+		arr.append(arr[i-1]+d)
+	return arr
 
 def sort(arr,n):
     for i in range (n-1):
@@ -29,8 +30,7 @@ def print(arr,n):
 n = int(input())
 x0 = int(input())
 d = int(input())
-arr=[]
 
 arr = create(n,x0,d)
-arr = sort(arr,n)
-arr = print(arr,n)
+sort(arr,n)
+print(arr,n)
