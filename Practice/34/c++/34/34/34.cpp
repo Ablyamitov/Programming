@@ -3,7 +3,7 @@ using namespace std;
 
 void create(int **pmas,int n, int x0 = 0, int d = 0) {
     *pmas = new int[n];
-     (*pmas)[0] = 0;
+     (*pmas)[0] = x0;
    for (int i = 1;i < n;i++) {
         (*pmas)[i] = (*pmas)[i - 1] + d;
     }
@@ -47,8 +47,12 @@ int* print(int* arr, int n) {
 }
 
 void destroy(int **pmas) {
-    delete[] *pmas;
-    *pmas = nullptr;
+    if (*pmas == nullptr) {}
+        
+    else {
+        delete[] * pmas;
+        *pmas = nullptr;
+    }
 }
 
 int main() {
