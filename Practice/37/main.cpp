@@ -1,4 +1,5 @@
-﻿#include <iostream>
+#include <iostream>
+#include<cmath>
 using namespace std;
 
 double sqr(double a);

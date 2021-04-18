@@ -1,8 +1,9 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include<cmath>
 using namespace std;
 
 const auto PI = 3.141592653589793;
@@ -26,8 +27,8 @@ public:
             this->a1 = a1 * cos(a2);
             this->a2 = a1* sin(a2);
         }
-    
-    
+
+
     }
     ~Point() {};
 

@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <cmath>
 using namespace std;
 bool equal(double a, double b, double e = 1E-10);
@@ -6,24 +6,17 @@ bool equal(double a, double b, double e = 1E-10);
 class Rational {
 public:
     int num, den;
-    int sign;
     int num_sign;
     int den_sign;
     Rational() {
         this->num = 0;
         this->den = 0;
-        this->sign = 1;
         this->num_sign = 1;
-        this->den_sign = -1;
+        this->den_sign = 1;
     }
     Rational(int a, int b) {
         (a < 0) ? this->num_sign = -1 : this->num_sign = 1;
         (b < 0) ? this->den_sign = -1 : this->den_sign = 1;
-        if (((a < 0) and (b >= 0)) or ((a >= 0) and (b < 0)) or (a==0)) {
-            this->sign = -1;
-        }
-        else
-            this->sign = 1;
         this->num = abs(a);
         this->den = abs(b);
     }
@@ -42,13 +35,12 @@ public:
              return abs(first);
          }
 
-    bool operator==(const Rational& r) {
-        if (isNaN() or r.isNaN()) return false;
-        if (sign != r.sign) return false;
-        if (num == 0 and r.num == 0) return true;
-        if (den == 0 and r.den == 0) return true;
-        return ((num * r.den) == (den * r.num));
-
+    bool operator==(const Rational& o) {
+        if (isNaN() or o.isNaN()) return false;
+        if (num == 0 and o.num == 0) return true;
+        if ((num_sign * den_sign) != (o.num_sign * o.den_sign)) return false;
+        if (den == 0 and o.den == 0) return true;
+        return ((num * o.den) == (den * o.num));
     }
 
 
@@ -76,7 +68,7 @@ public:
             if ((num_sign/den_sign) != (o.num_sign / o.den_sign)) {
                 temp1 = (num_sign*num *o.den_sign*o.den + o.num_sign*o.num * den_sign*den);
                 if (temp1 == 0) return Rational(0, 1);
-               
+
             }
             else {
                 temp1 = num_sign* num * o.den_sign*o.den + o.num_sign*o.num * den*den_sign;
@@ -192,7 +184,7 @@ public:
         return Rational(0, 0);
     }
 
-    
+
     operator double(){
         return double(num_sign/den_sign) * num / (double)den;
     }
@@ -210,6 +202,8 @@ public:
             return false;
 
     }
+    int numerator() { return num; }
+    int denominator() { return den; }
 };
 
 // Ваш код здесь
@@ -232,7 +226,7 @@ int main()
         !Rational(-22, 0).isNaN() &&
         Rational(0, 0).isNaN()
         ) std::cout << "isNaN test passed\n";
-    else std::cout << "isNaN test failed\n";     
+    else std::cout << "isNaN test failed\n";
     if (Rational(22, 0) == Rational(22, 0) &&
         Rational(22, 0) == Rational(9, 0) &&
         !(Rational(22, 0) == Rational(22, 9)) &&
@@ -260,7 +254,7 @@ int main()
         !(Rational(0, 1) == Rational(-22, 9)) &&
         !(Rational(0, 1) == Rational(22, 0)) &&
         !(Rational(0, 1) == Rational(-22, 0)) &&
-        !(Rational(0, 1) == Rational(0, 0)) &&
+        !(Rational(0, 1) == Rational(0, 0))&&
 
         Rational(-22, 9) == Rational(-22, 9) &&
         Rational(-22, 9) == Rational(22, -9) &&
