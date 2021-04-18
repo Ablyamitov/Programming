@@ -43,7 +43,7 @@
 
 | Практические | Лабораторные |
 | ------------ | ------------ |
-| Практическая 33 - [[C++]](./Practice/33/с++/) [[Python]](./Practice/33/python/) |
+| Практическая 33 - [[C++]](./Practice/33/c++/) [[Python]](./Practice/33/python/) |
 | Практическая 34 - [[C++]](./Practice/34/c++/)
 | Практическая 35 - [[C++]](./Practice/35/c++/) [[Python]](./Practice/35/python/) |
 | Практическая 36 - [[C++]](./Practice/36/c++/) [[Python]](./Practice/36/python/) |  
