@@ -48,6 +48,6 @@
 | Практическая 35 - [[C++]](./Practice/35/с++/) [[Python]](./Practice/35/python/) |
 | Практическая 36 - [[C++]](./Practice/36/c++/) [[Python]](./Practice/36/python/) |  
 | Практическая 37 - [[C++]](./Practice/37/с++/) [[Python]](./Practice/37/python/) |  
-| Практическая 38 - [[C++]](./Practice/38/с++/) [[Python]](./Practice/38/python/) | 
+| Практическая 38 - [[C++]](./Practice/38/c++/) [[Python]](./Practice/38/python/) | 
 
 
