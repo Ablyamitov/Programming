@@ -17,7 +17,18 @@ private:
     coord_system coord;
 public:
     double remember_a1 , remember_a2 ;
-    Point(double a1 = 0, double a2 = 0, coord_system coord = coord_system::Cartesian) :a1(a1), a2(a2), coord(coord) {}
+    Point(double a1 = 0, double a2 = 0, coord_system coord = coord_system::Cartesian) :a1(a1), a2(a2), coord(coord) {
+        if (coord == coord_system::Cartesian) {
+            this->a1 = a1;
+            this->a2 = a2;
+        }
+        else {
+            this->a1 = a1 * cos(a2);
+            this->a2 = a1* sin(a2);
+        }
+    
+    
+    }
     ~Point() {};
 
     double get_x() {
@@ -41,8 +52,9 @@ public:
         a2 = da2;
     }
     void set_r(double r) {
-        a1 = cos(get_phi()) * r;
-        a2 = sin(get_phi()) * r;
+        double fi = get_phi();
+        a1 = cos(fi) * r;
+        a2 = sin(fi) * r;
     }
     void set_phi(double phi) {;
         a1 = cos(phi) * get_r();

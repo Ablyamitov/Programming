@@ -1,8 +1,7 @@
 import math
 import copy
 from enum import Enum
-
-  
+ 
   
 class coord_system(Enum):
 	Cartesian = 0

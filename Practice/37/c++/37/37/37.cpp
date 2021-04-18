@@ -91,10 +91,10 @@ public:
 
 
 
-    Vector operator+(Vector other) {
+    Vector operator+(Vector second) {
         Point summation = unit_vectors;
-        summation.set_x(unit_vectors.get_x() + other.unit_vectors.get_x());
-        summation.set_y(unit_vectors.get_y() + other.unit_vectors.get_y());
+        summation.set_x(unit_vectors.get_x() + second.unit_vectors.get_x());
+        summation.set_y(unit_vectors.get_y() + second.unit_vectors.get_y());
         return Vector(summation);
     }
 
