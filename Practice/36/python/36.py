@@ -45,12 +45,14 @@ class Point:
 		self.y = y
 
 	def set_r(self,r):
-		self.x = math.cos(self.get_phi()) * r
-		self.y = math.sin(self.get_phi()) * r
+		fi = self.get_phi()
+		self.x = math.cos(fi * r)
+		self.y = math.sin(fi * r)
 
 	def set_phi(self,phi):
-		self.x = math.cos(phi) * self.get_r()
-		self.y = math.sin(phi) * self.get_r()
+		r = self.get_r()
+		self.x = math.cos(phi) * r
+		self.y = math.sin(phi) * r
 
 
 	def __repr__(self):
