@@ -1,83 +1,64 @@
-import math
-import copy
-from enum import Enum
- 
+from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QByteArray
+from PySide6.QtGui import QImage
+
+def set_bit(image: QImage, index, value) -> None:
+    pixel_index = index // 3
+    x = pixel_index % image.width()
+    y = pixel_index // image.width()
+
+    switch = index % 3
+    if switch == 0:
+        image.setPixel(x, y, (image.pixel(x, y) & ~0x010000) | (value << 16))
+    elif switch == 1:
+        image.setPixel(x, y, (image.pixel(x, y) & ~0x000100) | (value << 8))
+    elif switch == 2:
+        image.setPixel(x, y, (image.pixel(x, y) & ~0x000001) | value)
+
+
+def get_bit(image: QImage, index) -> bool:
+    pixel_index = index // 3
+    x = pixel_index % image.width()
+    y = pixel_index // image.width()
+
+    switch = index % 3
+    if switch == 0:
+        return (image.pixel(x, y) >> 16) & 1
+    elif switch == 1:
+        return (image.pixel(x, y) >> 8) & 1
+    elif switch == 2:
+        return image.pixel(x, y) & 1
+    else:
+        raise Exception()
+
+
+def read_bytes(image: QImage, begin, length) -> QByteArray:
+    byte_array = QByteArray()
+    buffer = 0
+    end = (begin + length) * 8
+
+    for i in range(begin * 8, end):
+        buffer = (buffer << 1) | get_bit(image, i)
+
+        if i % 8 == 7:
+            byte_array.push_back(bytes((buffer,)))
+            buffer = 0
+
+    return byte_array
+
+    
+def write_bytes(image: QImage, byte_array: QByteArray, begin) -> None:
+    end = (begin + byte_array.size()) * 8
+    for i in range(begin * 8, end):
+        set_bit(image, i, (int.from_bytes(byte_array[i // 8], "big") >> (7 - i % 8)) & 1)
+
+
+if __name__ == "__main__":
+    import sys
+    from steganography import MainWindow
+    app = QApplication(sys.argv)
   
-class coord_system(Enum):
-	Cartesian = 0
-	Polar = 1
+    window = MainWindow()
+    window.show()
   
-class Point:
-	def __init__(self,a1 = 0,a2 = 0,coord_system = coord_system.Cartesian):
-		if (type(a1) == str):
-			self.x = float( a1[1 : a1.find(',')].strip() )
-			self.y = float( a1[a1.find(',') + 1: -2].strip() )
-		else:
-			if (coord_system == coord_system.Cartesian):
-				self.x = a1
-				self.y = a2
-			else:	
-				self.x = math.cos(a2) * a1
-				self.y = math.sin(a2) * a1
-
-
-
-	def get_x(self):
-		return self.x
-
-	def get_y(self): 
-		return self.y
-
-
-	def get_r(self):
-		return math.sqrt(self.x*self.x + self.y*self.y)
-
-
-	def get_phi(self):
-		return math.atan2(self.y, self.x)
-
-
-	def set_x(self,x):
-		self.x = x
-
-
-	def set_y(self,y): 
-		self.y = y
-
-	def set_r(self,r):
-		fi = self.get_phi()
-		self.x = math.cos(fi * r)
-		self.y = math.sin(fi * r)
-
-	def set_phi(self,phi):
-		r = self.get_r()
-		self.x = math.cos(phi) * r
-		self.y = math.sin(phi) * r
-
-
-	def __repr__(self):
-		return f'Point({self.x},{self.y})'
-
-	def __str__(self):
-		return f'({self.x},{self.y})'
-	def __eq__(self, other):
-		return (abs(self.x - other.x) < 10**-10) and (abs(self.y - other.y) < 10**-10)
-
-	def __ne__(self, other):
-		return not self == other
-
-
-
-with open('data.txt') as fin:
-    original = [Point(p) for p in fin.readline().split(', ')]
-  
-simulacrum = copy.deepcopy(original)
-for p in simulacrum:
-    print(p, end='')
-    p.set_x(p.get_x() + 10)
-    p.set_phi(p.get_phi() + 180*math.pi/180)
-    p.set_y(-p.get_y())
-    p.set_x(-p.get_x() - 10)
-    print(p)
-  
-print('\nIt works!\n' if simulacrum == original else '\nIt not works!\n')
+    sys.exit(app.exec_())
