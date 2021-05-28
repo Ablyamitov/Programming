@@ -1,0 +1,98 @@
+[
+    {
+        "coins": "100",
+        "id": "0",
+        "login": "Enver",
+        "password": "1234"
+    },
+    {
+        "coins": "0",
+        "id": "1",
+        "login": "Isa",
+        "password": "4321"
+    },
+    {
+        "coins": "0",
+        "id": "2",
+        "login": "Ivan",
+        "password": "5555"
+    },
+    {
+        "coins": "0",
+        "id": "3",
+        "login": "admin",
+        "password": "admin"
+    },
+    {
+        "coins": "0",
+        "id": "4",
+        "login": "hello",
+        "password": "hello"
+    },
+    {
+        "coins": "0",
+        "id": "5",
+        "login": "Valera",
+        "password": "1234"
+    },
+    {
+        "coins": "0",
+        "id": "6",
+        "login": "hi",
+        "password": "321"
+    },
+    {
+        "coins": "0",
+        "id": "7",
+        "login": "Jimmy",
+        "password": "Hen"
+    },
+    {
+        "coins": "0",
+        "id": "8",
+        "login": "Lanadelrey",
+        "password": "summertime"
+    },
+    {
+        "coins": "0",
+        "id": "9",
+        "login": "Why",
+        "password": "I"
+    },
+    {
+        "coins": "0",
+        "id": "10",
+        "login": "fsd",
+        "password": "asd"
+    },
+    {
+        "coins": "0",
+        "id": "11",
+        "login": "214",
+        "password": "241"
+    },
+    {
+        "coins": "0",
+        "id": "12",
+        "login": "hne",
+        "password": "qwdrf"
+    },
+    {
+        "coins": "0",
+        "id": "13",
+        "login": "Kim",
+        "password": "123"
+    },
+    {
+        "coins": "0",
+        "id": "14",
+        "login": "ME",
+        "password": "YOU"
+    },
+    {
+        "coins": "0",
+        "id": "15",
+        "login": "hifds",
+        "password": "gdsgd"
+    }
+]
