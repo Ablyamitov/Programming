@@ -1,4 +1,3 @@
-from multiplayer import Multiplayer
 import sys 
 import pygame
 
@@ -15,6 +14,7 @@ from menu import Menu
 from authorization import Authorization
 from multiplayer import Multiplayer
 from registration import Registration
+from shop import Shop
 import requests
 import json
 import os
@@ -30,11 +30,7 @@ class Main:
 
 
         self.settings = Settings()
-        #self.screen = pygame.display.set_mode((self.settings.screen_width,self.settings.screen_height))
         self.screen = pygame.display.set_mode((self.settings.screen_width,self.settings.screen_height))
-        #self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-        #self.settings.screen_width = self.screen.get_rect().width
-        #self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Cactus evolution")
 
         self.clicker = Clicker(self)
@@ -103,8 +99,7 @@ class Main:
         self.login = ''
         self.password = ''
         self.bool_resp = None
-        #self.BLINK_EVENT = pygame.USEREVENT + 1
-        #pygame.time.set_timer(self.BLINK_EVENT, 250)
+        self.without_symb = None
 
         self.multiplayer_timer = 30
         self.multiplayer_ticks = None
@@ -122,6 +117,7 @@ class Main:
         self.interval = 3
         self.start_room = False
         self.CLIENT_ID = None
+        self.enemy_id = None
         self.game_data = {}
         self.game_search_ticks = None
         self.game_search_timer = None
@@ -132,19 +128,24 @@ class Main:
 
         self.my_health_loss = 0
         self.enemy_health_loss = 0
-        ###############
-        self.my_health = 1000
+        self.my_health = None
         self.enemy_health = 1000
-        ###############
         self.end_multiplayer_game_access = False
         self.rez = ''
 
+        self.shop = Shop(self)
+        self.level = None
+        self.next_level_exp = None
+        self.exp = None
+        self.coins = None
+        self.singleplayer_coins = 0
+        self.multiplayer_coins = 0
+        self.multiplayer_add_coins = False
+        self.singleplayer_add_coins = False
+        self.singleplayer_exp = 0
+        self.multiplayer_exp = 0
 
-        def res_path(relative):
-            if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'): # if you are running in a |PyInstaller| bundle
-                return os.path.join(sys._MEIPASS, relative)	           # возвращаем абсолютный путь с учётом 
-                                                                           # директории временной распаковки
-            return relative #path.join(os.getcwd(), relative)              # запуск не из EXE и ничего менять не надо.
+
 
 
 
@@ -153,35 +154,15 @@ class Main:
         '''запуск основного цикла игры'''
 
         while True:
-            print(self.game_folder)
             self._check_events()
-            #Робым авторизацию
             if self.authorization_access:
-                #self.screen.fill((0,0,0))
-                self.screen.blit(self.settings.menu_entrance,self.settings.image_menu_rect)
-                #self.screen.blit(self.settings.new_menu,self.settings.image_new_menu_rect)
-                self.au.blit_autorizhation()
-                self.au.show_enter_button()
-                self.au.show_reg_button()
-                self.au.draw_rect()
-                self._authorization()
-                if self.bool_resp == False:
-                    self.au.show_resp(False) 
+                self._autorization()
 
             elif self.reg_access:
-                #self.screen.fill((0,0,0))
-                self.screen.blit(self.settings.menu_entrance,self.settings.image_menu_rect)
-                #self.screen.blit(self.settings.new_menu,self.settings.image_new_menu_rect)
-                self.reg.blit_registration()
-                self.reg.show_enter_reg_button()
-                self.reg.draw_interface()
-                self._registration()
-                if self.bool_resp == False:
-                    self.reg.show_resp(False)
+                self._reg()
 
-            #else:       #Воть тут убрать
             else:
-                if not self.menu_access:            #Таб
+                if not self.menu_access:            
                     if self.singleplayer_access:    
                         self._singleplayer()
                     elif self.end_access:
@@ -197,7 +178,7 @@ class Main:
                     elif self.shop_access:
                         self._shop()       
                 elif self.menu_access:
-                        self._menu()                #
+                        self._menu()                
             self._update_screen()
             self.clock.tick(60)
     
@@ -221,12 +202,78 @@ class Main:
                 if self.multiplayer_access == False and self.menu_access == False:
                     self._check_play_button(mouse_pos)
                 self._check_button(mouse_pos)
-                #if self.authorization_access:
-                    #self._check_authorization(mouse_pos)
 
-            '''if event.type == self.BLINK_EVENT:
-                self.au.show_cur()'''
-            
+    def _reg(self):
+        self.screen.blit(self.settings.menu_entrance,self.settings.image_menu_rect)
+        self.reg.blit_registration()
+        self.reg.show_enter_reg_button()
+        self.reg.draw_interface()
+        self._registration()
+        if self.bool_resp == False:
+            self.reg.show_resp(False,self.without_symb)
+
+    def _autorization(self):
+        self.screen.blit(self.settings.menu_entrance,self.settings.image_menu_rect)
+        self.au.blit_autorizhation()
+        self.au.show_enter_button()
+        self.au.show_reg_button()
+        self.au.draw_rect()
+        self._authorization()
+        if self.bool_resp == False:
+            self.au.show_resp(False) 
+
+
+    def _authorization_access(self):
+        self.login =self.user_login
+        self.password = self.user_password
+        param = {'login': self.login, 'password': self.password}
+        res = requests.post("http://localhost:3000/autorizhation", data=json.dumps(param))
+        if res.text != "" and res.text!="Пусто":
+            res_json = res.json()
+            self.CLIENT_ID = res_json["id"]
+            self.level = int(res_json["level"])
+            self.next_level_exp = int(res_json["next_level_exp"])
+            self.exp = int(res_json["exp"])
+            self.my_health = int(res_json["health"])
+            self.coins = int(res_json["coins"])
+        if (bool(res.text)==True):
+            self.authorization_access = False
+        else:
+            self.bool_resp = False
+        self.user_login = ""
+        self.user_password = ""
+
+    def _registration_access(self):
+        self.login =self.user_login
+        self.password = self.user_password
+        param = {'login': self.login, 'password': self.password}
+        res = requests.post("http://localhost:3000/registration", data=json.dumps(param))
+        if res.text != "" and res.text!="empty":
+            res_json = res.json()
+            self.CLIENT_ID = res_json["id"]
+            self.level = int(res_json["level"])
+            self.next_level_exp = int(res_json["next_level_exp"])
+            self.exp = int(res_json["exp"])
+            self.my_health = int(res_json["health"])
+            self.coins = int(res_json["coins"])
+
+        if (bool(res.text) == True and res.text!="empty"):
+            self.reg_access = False                     
+        elif res.text == "":
+            self.without_symb = False
+            self.bool_resp = False
+            self.user_login =""
+            self.user_password = "" 
+        elif res.text == "empty":
+            self.without_symb = True
+            self.bool_resp = False
+            self.user_login =""
+            self.user_password = "" 
+        self.user_login = ""
+        self.user_password = ""
+
+
+
     def _check_button(self,mouse_pos):
 
         singleplayer = self.menu.singleplayer_rect.collidepoint(mouse_pos)
@@ -242,7 +289,6 @@ class Main:
 
         search_game = self.mu.lets_go_rect.collidepoint(mouse_pos)
 
-        #if self.authorization_access:
         enter = self.au.enter_rect.collidepoint(mouse_pos)
         enter_reg = self.reg.enter_reg_rect.collidepoint(mouse_pos)
         registration = self.au.reg_rect.collidepoint(mouse_pos)
@@ -251,12 +297,13 @@ class Main:
             if singleplayer:
                 self.arrows.empty()
                 self.stats.reset_other_stats()
-                #self.end_access = False
                 self.menu_access = False
                 self.check_start_game = True
                 self.start_countdown = True
                 self.singleplayer_access = False
                 self.stats.reset_stats()
+                self.singleplayer_coins = 0
+                self.singleplayer_exp = 0
                 self.sb.prep_score()
                 self.sb.show_score()
                 self.sb.show_all_score()
@@ -270,6 +317,8 @@ class Main:
                 self.check_start_game = False
                 self.singleplayer_access = False
                 self.shop_access = False
+                self.multiplayer_coins = 0
+                self.multiplayer_exp = 0
 
             if shop:
                 self.check_start_game = False
@@ -287,59 +336,24 @@ class Main:
 
         if not self.end_round and self.multiplayer_access and self.choise:
             if scissors:
-                #self.scissors()
                 self.step = 'scissors'
             elif stone:
-                #self.rock()
                 self.step = 'rock'
             elif paper:
-                #self.paper()
                 self.step = 'paper'
 
         if self.authorization_access:
             if registration:
                 self.reg_access =True
                 self.authorization_access = False
-                #################
                 self.user_login = ""
                 self.user_password = ""
-           ################################
             if enter:
-                self.login =self.user_login
-                self.password = self.user_password
-                param = {'login': self.login, 'password': self.password}
-                res = requests.post("http://localhost:3000/autorizhation", data=json.dumps(param))
-                if res.text != "":
-                    res_json = res.json()
-                    self.CLIENT_ID = res_json["id"]
-                ##print("Ответ с авторизации: ", res.text)
-                if (bool(res.text) == True):
-                    self.authorization_access = False
-                else:
-                    ##print("haeraer")
-                    self.bool_resp = False
-                    self.user_login =""
-                    self.user_password = ""
-                ##print(res.text)
-                #self.authorization_access = False
-            ##############################################
+                self._authorization_access()
 
         if self.reg_access:
             if enter_reg:
-                self.login =self.user_login
-                self.password = self.user_password
-                param = {'login': self.login, 'password': self.password}
-                res = requests.post("http://localhost:3000/registration", data=json.dumps(param))
-                if res.text != "":
-                    res_json = res.json()
-                    self.CLIENT_ID = res_json["id"]
-                ##print("Ответ с регистрации: ", res.text)
-                if (bool(res.text) == True):
-                    self.reg_access = False
-                else:
-                    self.bool_resp = False
-                self.user_login = ""
-                self.user_password = ""
+                self._registration_access()
 
                 
 
@@ -412,7 +426,7 @@ class Main:
                 self.check_start_game = False
             else:
                 sys.exit()
-        if self.singleplayer_access:        ###этого условия сегодня не было
+        if self.singleplayer_access:        
             if event.key == pygame.K_RIGHT:
                 self.current_color = self.settings.arrows_color['right']
                 self.right = True
@@ -433,66 +447,25 @@ class Main:
                 self.down = True
                 self._remove_arrows()
                 self.down = False
-        if (not self.stats.game_active and self.singleplayer_access):  
-            if event.key == pygame.K_SPACE:
-                self._start_game()
+
+        #if (not self.stats.game_active and self.singleplayer_access):
+            #pass  
+            #if event.key == pygame.K_SPACE:
+                #self._start_game()
         
         if self.authorization_access:
 
             if event.key == pygame.K_RETURN:
-                self.login =self.user_login
-                self.password = self.user_password
-                param = {'login': self.login, 'password': self.password}
-                res = requests.post("http://localhost:3000/autorizhation", data=json.dumps(param))
-                res_json = res.json()
+                self._authorization_access()
 
-                self.CLIENT_ID = res_json["id"]
-                ##print("Ответ с авторизации: ", res_json)
-                #Меняем кодировку, чтобы русские буквы показывались
-                #res.encoding = res.apparent_encoding
-                if (bool(res_json) == True):
-                    self.authorization_access = False
-                else:
-                    self.bool_resp = False
-                    #self.au.show_resp(False)
-                #json_res = res.json()
-                #print(json_res)
-                ##print(res.text)
-                
-                self.authorization_access = False
-                self.user_login = ""
-                self.user_password = ""
-
-                #print(self.login,self.password)
         elif self.reg_access:
             if event.key == pygame.K_RETURN:
-                self.login =self.user_login
-                self.password = self.user_password
-                param = {'login': self.login, 'password': self.password}
-                res = requests.post("http://localhost:3000/registration", data=json.dumps(param))
-                res_json = res.json()
-                self.CLIENT_ID = res_json["id"]
-                ##print("Ответ с регистрации: ", res_json)
-                #Меняем кодировку, чтобы русские буквы показывались
-                #res.encoding = res.apparent_encoding
-                if (bool(res_json) == True):
-                    self.reg_access = False
-                else:
-                    self.bool_resp = False
+                self._registration_access()
+            self._registration()
 
-                    self.reg_access =False
-                self.user_login = ""
-                self.user_password = ""
 
-                    #self.au.show_resp(False)
-                #json_res = res.json()
-                #print(json_res)
-                #print(res.text)
 
-        #if self.authorization_access:
         if self.write_access_login or self.write_access_password:
-        #if ((event.key>64 and event.key <91) or (event.key>96 and event.key<123) or (event.key>47 and event.key<58)):
-        #print("hi")
             if event.key == pygame.K_BACKSPACE:
                 if self.write_access_login:
                     self.user_login = self.user_login[:-1]
@@ -511,7 +484,6 @@ class Main:
         '''Запускает новую игру при нажатии кнопки Play.'''
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked:
-            print("ПОПАЛ ПОПАЛ ПОПАЛ ПОПАЛ ПОПАЛ")
             #Сброс игровой статистики.
             self.stats.reset_stats()
             self.stats.game_active = True
@@ -520,13 +492,6 @@ class Main:
             pygame.mouse.set_visible(False)
 
 
-
-
-    def _start_game(self):
-        '''Если нажата клавиша ПРОБЕЛ в начале игры'''
-        self.stats.reset_stats()
-        self.stats.game_active = True
-        pygame.mouse.set_visible(False)
         
 
 
@@ -548,17 +513,20 @@ class Main:
                 arrow.blit_up_arrow()
             elif arrow.color == self.settings.arrows_color['down']:
                 arrow.blit_down_arrow()
+
         for arrow in self.arrows.copy():
-            if arrow.color != self.settings.arrows_color['right']: 
-                if arrow.rect.left>=self.settings.screen_width:
-                    self.arrows.remove(arrow)
-            else:
-                if arrow.right_rect.left>=self.settings.screen_width:
-                    self.arrows.remove(arrow)
+            if arrow.right_rect.left>=self.settings.screen_width:
+                self.arrows.remove(arrow)
 
     def _remove_arrows(self):
         '''Удаление стрелочки, при нажатии клавиши'''
         for arrow in self.arrows.copy():
+            ###########################
+            if self.clicker.bottom_square.right < arrow.rect.left:
+                self.arrows.remove(arrow)
+                self._remove_arrows()
+
+            ##########################
             if self.current_color == arrow.color:
                 if arrow.rect.left < self.clicker.bottom_square.left or (
                     arrow.rect.left >= self.clicker.bottom_square.left and
@@ -582,7 +550,6 @@ class Main:
                     self.stats.score += self.settings.arrow_points_hit
                     self.stats.all_score += self.settings.arrow_points_hit
                     self.sb.prep_score()
-                    #self.clicker.draw_stats_rect()
                     self.arrows.remove(arrow)
                     self.clicker.draw_green_square()
                     pygame.display.update(self.clicker.bottom_square)
@@ -603,6 +570,8 @@ class Main:
         '''Проверяет очки, а затем поливает(если очки максимум)'''
         if(self.stats.score>=self.settings.limit_points):
             self.stats.wat_count +=1
+            self.singleplayer_coins +=1
+            self.singleplayer_exp +=100
             self.access = True
             self.stats.reset_stats()
             self.sb.prep_score()
@@ -637,7 +606,21 @@ class Main:
     def _menu(self):
         self.screen.blit(self.settings.menu,self.settings.image_menu_rect)
         self.menu.blit_menu()
+        self.menu.blit_coins(self.coins,self.exp,self.level,self.next_level_exp)
         self.menu.draw_hi(self.login)
+    
+    def _set_and_coins(self):
+        param = {'coins': str(self.coins), 'id': str(self.CLIENT_ID)}
+        requests.post("http://localhost:3000/set_exp_and_coins", data=json.dumps(param))
+
+    def _set_and_check_exp_and_level(self):
+        param = {'exp': str(self.exp), 'id': str(self.CLIENT_ID), 'next_level_exp':str(self.next_level_exp),'level':str(self.level)}
+        response = requests.post('http://localhost:3000/set_and_check_exp_and_level', data=json.dumps(param))
+        res_json = response.json()
+        self.exp = int(res_json["exp"])
+        self.next_level_exp = int(res_json["next_level_exp"])
+        self.level = int(res_json["level"])
+
 
     def _singleplayer(self):
         self.screen.blit(self.settings.image_desert,self.settings.image_desert_rect)
@@ -661,14 +644,19 @@ class Main:
             if self.timer_access:
                 if not self.music_play:
                     random_music = random.choice(self.settings.musics)
-                    #pygame.mixer.music.load(random_music)
+                    
                     pygame.mixer.music.load(os.path.join(self.sounds_folder,random_music))
                     if random_music == "sep.mp3":
                         pygame.mixer.music.play(loops=0, start=28.0, fade_ms = 0)
-                    elif random_music == "never.mp3":
+                    elif random_music == "never.mp3" or random_music == "onepunchman.mp3":
                         pygame.mixer.music.play(loops=0, start=10.0, fade_ms = 0)
+                    elif random_music == "Pugacheva.mp3":
+                        pygame.mixer.music.play(loops=0, start=48.0, fade_ms = 0)
+                    elif random_music == "C_C_Catch.mp3":
+                        pygame.mixer.music.play(loops=0, start=41.0, fade_ms = 0)
                     else:
                         pygame.mixer.music.play(loops=0, start=0, fade_ms = 0)
+                        
                     self.music_play = True
                 self.sb.show_timer(sec = self.timer_s)
 
@@ -685,6 +673,7 @@ class Main:
                     self.singleplayer_access = False
                     self.check_start_game = False
                     self.end_access = True
+                    self.singleplayer_add_coins = True
                     pygame.mixer.music.stop()
                     self.music_play = False
                     pygame.mouse.set_visible(True)
@@ -701,25 +690,45 @@ class Main:
                 self._check_events()
                 if pygame.time.get_ticks() > self.passed_time:
                     self._create_arrow()
-                    self.passed_time = pygame.time.get_ticks()+random.randint(1000,1001)
+                    self.passed_time = pygame.time.get_ticks()+random.randint(800,1150)
                 self._check_points()
                 self._draw_other()
                 self.reset_arrows = False
                 pygame.display.flip()
 
+
     def _end_game(self):
         self.screen.blit(self.settings.image_desert,self.settings.image_desert_rect)
-        self.sb.end_game()
+        self.sb.end_game(self.singleplayer_coins,self.singleplayer_exp)
+        if self.singleplayer_add_coins:
+            self.coins+=self.singleplayer_coins
+            if self.level<5:
+                self.exp+=self.singleplayer_exp
+                self._set_and_check_exp_and_level()
+            self.singleplayer_add_coins = False
+            self._set_and_coins()
 
+
+    def _check_multiplayer_param(self):
+        if self.rez == 'WIN':
+            self.multiplayer_coins += 10
+            self.multiplayer_exp += 100
 
     def _end_multiplayer_game(self):
+        self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
+        if self.multiplayer_add_coins:
+            self._check_multiplayer_param()
+            self.coins+=self.multiplayer_coins
+            if self.level<5:
+                self.exp += self.multiplayer_exp
+                self._set_and_check_exp_and_level()
+            self.multiplayer_add_coins = False
+            self._set_and_coins()
+        self.mu.blit_end_multiplayer_game(self.rez,self.multiplayer_coins,self.multiplayer_exp)
         self.my_health_loss = 0
         self.enemy_health_loss = 0
         self.my_health = 1000
         self.enemy_health = 1000
-        #Тут должен быть блит конца мультиплеерной игры с подведением итогов
-        self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
-        self.mu.blit_end_multiplayer_game(self.rez)
 
 
 
@@ -744,27 +753,16 @@ class Main:
         try:
             response = requests.post('http://localhost:3000/play_game', data)
             resp_json = response.json()
-            #print(resp_json)
             if resp_json['game_status'] == 'run':
                 if resp_json['winner'] == 'I':
-
                     self._update_health(enemy=True)
-                    ##############УБРАТЬ, ЕСЛИ НЕ ПАШИТ
                     self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
-                    ###################ВОТ ТУТ НАЧИНАЮ РАБОТАТЬ НА ПРОВЕРКУ
                     self._blit_elem(data)
-                    ##########################
                     self.mu.multiplayer_game()
-
-                    ###########################ДО СЮДА
                     self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-                    ######################
                     self.mu.blit_health(self.my_health,self.enemy_health)
-                    #####################
-                    #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
                     self.mu.blit_rez('win')
                     self.mu.blit_enemy_elem(self.step,'WIN')
-                    #print("WIN")
                     self.step = ''
                     pygame.display.flip()
                     pygame.time.delay(2000)
@@ -772,24 +770,18 @@ class Main:
                     if self.my_health_loss == 250 or self.enemy_health_loss == 250:
                         self.rez = 'WIN'
                         self.end_multiplayer_game_access = True
+                        self.multiplayer_add_coins = True
 
                     #Блит победы
                 elif resp_json['winner'] == 'Other':
-
                     self._update_health(my=True)
-                     ##############УБРАТЬ, ЕСЛИ НЕ ПАШИТ
                     self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
                     self._blit_elem(data)
                     self.mu.multiplayer_game()
-                    ###########################ДО СЮДА
                     self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
                     self.mu.blit_health(self.my_health,self.enemy_health)
-                    #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
                     self.mu.blit_rez('lose')
-                    #############################
                     self.mu.blit_enemy_elem(self.step,'LOSE')
-                    ###############################
-                    #print("LOSE")
                     self.step = ""
                     pygame.display.flip()
                     pygame.time.delay(2000)
@@ -798,16 +790,13 @@ class Main:
                         self.end_multiplayer_game_access = True
                     #Блит слива
                 elif resp_json['winner'] == 'Draw':
-                    self.mu.blit_rez('draw')
-                     ##############УБРАТЬ, ЕСЛИ НЕ ПАШИТ
                     self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
                     self._blit_elem(data)
                     self.mu.multiplayer_game()
-                    ###########################ДО СЮДА
-                    ##################################
+                    self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
+                    self.mu.blit_health(self.my_health,self.enemy_health)
+                    self.mu.blit_rez('draw')
                     self.mu.blit_enemy_elem(self.step,'DRAW')
-                    ###################################
-                    #print("DRAW")
                     self.step = ""
                     pygame.display.flip()
                     pygame.time.delay(2000)
@@ -815,10 +804,7 @@ class Main:
                 self.end_round = True
                 return
             else:
-                ####################
                 self.mu.blit_act(True)
-                #####################
-                #pass
                 #print('waiting enemy choice')
         except Exception as err:
             print(f'{err}')
@@ -827,73 +813,21 @@ class Main:
 
 
     def rock(self):
-        #print(self.game_data)
-        #print('Камень')
         data={'ID':self.CLIENT_ID, 'game_id':self.game_data['game_id'], 'user_choice': 'rock'}
-        
-
-
         self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
         self.mu.multiplayer_game()
-        #self.menu.multiplayer_game()
-
         self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
         self.mu.blit_health(self.my_health,self.enemy_health)
-        #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-
-        ###################ОТСЮДА УБРАТЬ КОММЕНТАРИЙ 
         self.mu.blit_elem(scissors = False, paper = False,rock = True)
-
-
-        def check():
-            try:
-                response = requests.post('http://localhost:3000/play_game', data)
-                resp_json = response.json()
-                print(resp_json)
-                if resp_json['game_status'] == 'run':
-                    if resp_json['winner'] == 'I':
-                        self.mu.blit_rez('win')
-                        print("WIN")
-                        self.step = ""
-                        pygame.display.flip()
-                        pygame.time.delay(2000)
-                        #Блит победы
-                    elif resp_json['winner'] == 'Other':
-                        self.mu.blit_rez('lose')
-                        print("LOSE")
-                        self.step = ""
-                        pygame.display.flip()
-                        pygame.time.delay(2000)
-                        #Блит слива
-                    elif resp_json['winner'] == 'Draw':
-                        self.mu.blit_rez('draw')
-                        print("DRAW")
-                        self.step = ""
-                        pygame.display.flip()
-                        pygame.time.delay(2000)
-                        #Блит ничьи                  
-                    self.end_round = False
-                    return
-                else:
-                    print('waiting enemy choice')
-            except Exception as err:
-                print(f'{err}')
-                return
-            
-        #check()
         self._rez(data)
 
 
     def scissors(self):
-        #print('Ножницы')
         data={'ID':self.CLIENT_ID, 'game_id':self.game_data['game_id'], 'user_choice': 'scissors'}
-
         self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
         self.mu.multiplayer_game()
-        #self.menu.multiplayer_game()
         self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
         self.mu.blit_health(self.my_health,self.enemy_health)
-        #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
         self.mu.blit_elem(scissors=True, paper = False,rock=False)
 
 
@@ -932,19 +866,14 @@ class Main:
                 print(f'{err}')
                 
                 return
-        #check()
         self._rez(data)
 
     def paper(self):
-        #print('Бумага')
         data={'ID':self.CLIENT_ID, 'game_id':self.game_data['game_id'], 'user_choice': 'paper'}
-
         self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
         self.mu.multiplayer_game()
-        #self.menu.multiplayer_game()
         self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
         self.mu.blit_health(self.my_health,self.enemy_health)
-        #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
         self.mu.blit_elem(scissors=False, paper = True,rock=False)
 
 
@@ -982,7 +911,6 @@ class Main:
             except Exception as err:
                 print(f'{err}')
                 return
-        #check()
         self._rez(data)
 
 
@@ -993,23 +921,15 @@ class Main:
             try:
                 response = requests.post('http://localhost:3000/game_search', data)
                 resp_json = response.json()
-                ##print(resp_json)
                 if resp_json['game_status'] == 'run':
-                    #global game_data
                     self.game_data = resp_json['game_data']
                     self.game_search_timer = False
                     self.game_search_ticks = None
                     self.search_game_access = False
                     self.start_room = True
-                    #window.ui.pushButton.setVisible(False)
-                    #window.ui.frame.setVisible(True)
                     return
                 else:
                     pass
-                    #self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
-                    #self.mu.blit_waiting()
-                    #pygame.display.flip()
-                    ##print('waiting for enemy')
             except Exception as err:
                 print(f'{err}')
                 self.game_search_timer = False
@@ -1024,62 +944,32 @@ class Main:
             check_game()
             self.game_search_ticks = None
                 
+    def _cool_down(self):
+        self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
+        self.mu.multiplayer_game()
+        self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
+        self.mu.blit_health(self.my_health,self.enemy_health)
+        self.sb.show_countdown(sec = self.interval)
+        self.interval -=1
+        pygame.display.flip()
+        pygame.time.delay(1000)
 
     def _mult_timer(self):
-        #if self.multiplayer_timer == 30:
-        #    '''ТУТ ДОЛЖНО БЫТЬ КАКОЕ-ТО ДЕЙСТВИЕ ПОСЛЕ ВЫБОРА(реквестим наши выборы)'''
         if self.step == 'rock':
             self.rock()
         elif self.step == 'scissors':
             self.scissors()
         elif self.step == 'paper':
             self.paper()
-       ########################################
         else:
             self.mu.blit_act(False)
-        ######################################
         if self.end_round and not self.end_multiplayer_game_access:
-            self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
-            self.mu.multiplayer_game()
-            self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-            self.mu.blit_health(self.my_health,self.enemy_health)
-            #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-            self.sb.show_countdown(sec = self.interval)
-            self.interval -=1
-            pygame.display.flip()
-            pygame.time.delay(1000)
-            self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
-            self.mu.multiplayer_game()
-            self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-            self.mu.blit_health(self.my_health,self.enemy_health)
-            #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-            self.sb.show_countdown(sec = self.interval)
-            self.interval -=1
-            pygame.display.flip()
-            pygame.time.delay(1000)
-            self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
-            self.mu.multiplayer_game()
-            self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-            self.mu.blit_health(self.my_health,self.enemy_health)
-            #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-            self.sb.show_countdown(sec = self.interval)
-            self.interval -=1
-            pygame.display.flip()
-            pygame.time.delay(1000)
-            self.screen.blit(self.settings.mult_bg,self.settings.mult_bg_rect)
-            self.mu.multiplayer_game()
-            self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-            self.mu.blit_health(self.my_health,self.enemy_health)
-            #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-            self.sb.show_countdown(sec = self.interval)
-            self.interval -=1
-            pygame.display.flip()
-            pygame.time.delay(1000)
+            for i in range(4):
+                self._cool_down()
             self.interval = 3
             self.end_round = False
             self.multiplayer_timer = 30
 
-            #self.multiplayer_timer = 5
 
 
     def _wait_player(self):
@@ -1096,19 +986,16 @@ class Main:
         self.mu.multiplayer_game()
         self.mu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
         self.mu.blit_health(self.my_health,self.enemy_health)
-        #self.mu.blit_health()
-        #self.menu.draw_stats_part_rect(self.my_health_loss,self.enemy_health_loss)
-        #self.sb.show_countdown(sec = self.multiplayer_timer)
         self.mu.blit_elem()
-        #if self.acess_access:
         self._mult_timer()
-            #if self.SSP_access == True:
         
 
-        #self.menu.show_bebop()
     def _shop(self):
-        self.screen.fill((0,0,0))
-        self.menu.show_bebop()
+        self.screen.blit(self.settings.shop_bg,self.screen.get_rect())
+        if not (self.level ==5):
+            self.menu.show_bebop()
+        else:
+            self.shop.blit_all_cactus()
         
 
     def _draw_other(self):
@@ -1127,9 +1014,10 @@ class Main:
         pygame.display.flip()
 
 
-
+    
     
 if __name__ == "__main__":
     '''создание экземпляра и запуск игры'''
     m = Main()
     m.run_game()
+

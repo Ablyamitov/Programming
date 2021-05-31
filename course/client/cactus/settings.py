@@ -13,21 +13,28 @@ class Settings():
         self.image_folder = os.path.join(self.game_folder,'images')
 
         self.image_desert = pygame.image.load(os.path.join(self.image_folder,'desert.jpg'))
-        
-        #self.image_desert = pygame.image.load('images/desert.jpg')
         self.image_desert_rect= self.image_desert.get_rect()
         self.image_desert_rect.x = 0
         self.image_desert_rect.y = 0
  
-        self.timer = 45
-        self.musics = ["sep.mp3","never.mp3"]         #"sounds/Egor.mp3"
-        self.screen_width = 1536
-        self.screen_height = 871
+        self.timer = 30
+
+
+        self.musics = ["sep.mp3",
+        "never.mp3",
+        "onepunchman.mp3",
+        "Pugacheva.mp3",
+        "C_C_Catch.mp3"]
+
+
+
+        #self.screen_width = 1536
+        #self.screen_height = 871
+        self.screen_width = 1200
+        self.screen_height = 700
         self.center_x = self.screen_width/2
         self.center_y = self.screen_height/2
 
-        #self.screen_width = 1200
-        #self.screen_height = 700
         self.background_color = (255, 255, 255)
 
         #Прямоугольник
@@ -61,8 +68,14 @@ class Settings():
 
         #Стрелки
         self.arrow_color = (0,0,0)
-        self.arrows_color ={'right':(0,0,0),'up':(255,182,193),'left':(255,255,255), 'down':(138,255,189)}
+
+        self.arrows_color ={'right':(0,0,0),
+        'up':(255,182,193),
+        'left':(255,255,255),
+         'down':(138,255,189)}
+
         self.left_arrow_width = 50
+
         self.left_arrow_height = 50
 
         self.arrow_speed_factor = 10
@@ -81,22 +94,16 @@ class Settings():
 
 
         #Поливка
-        self.watering_rect_width = 400
-        self.watering_rect_height = 200
+        self.watering_rect_width = 300
+        self.watering_rect_height = 150
         self.watering_rect_x = ((self.cactus_rect_x + self.cactus_rect_width/2)-self.watering_rect_width/2)-75
-        self.watering_rect_y = self.cactus_rect_y - self.watering_rect_height 
+        self.watering_rect_y = self.cactus_rect_y - int(0.0694 * self.screen_height)
         self.watering_rect_color = (66,170,255)
 
         self.image_watering = pygame.image.load(os.path.join(self.image_folder,'wat.png'))
 
-        #self.obema = pygame.image.load('images/obema.png')
 
 
-        #Меню
-        #self.image_menu = pygame.image.load('images/m_bg.png')
-        #self.menu = pygame.transform.scale(self.image_menu,
-        #                        (self.screen_width,self.screen_height)
-        #                        )
 
 
 
@@ -110,15 +117,8 @@ class Settings():
         self.menu = pygame.transform.scale(self.image_menu,
                                         (self.screen_width,self.screen_height)
                                         )
-        #self.image_new_menu = pygame.image.load('images/new_Menu_bg.png')
-        #self.new_menu = pygame.transform.scale(self.image_new_menu,
-        #                        (self.screen_width,self.screen_height)
-        #                        )
 
 
-        #self.image_new_menu_rect = self.new_menu.get_rect()
-        #self.image_new_menu_rect.x = 0
-        #self.image_new_menu_rect.y = 0
         self.image_menu_rect= self.menu.get_rect()
         self.image_menu_rect.x = 0
         self.image_menu_rect.y = 0
@@ -181,8 +181,18 @@ class Settings():
         self.lets_go  = pygame.image.load(os.path.join(self.image_folder,'lets_go.jpg'))
 
         self.search_button = pygame.image.load(os.path.join(self.image_folder,'search1.png'))
-    
 
+        self.box_cactus = pygame.image.load(os.path.join(self.image_folder,'box.png'))
+        self.cowboy_cactus = pygame.image.load(os.path.join(self.image_folder,'cowboy.png'))
+        self.cute_cactus = pygame.image.load(os.path.join(self.image_folder,'cute.png'))
+
+        self.shop = pygame.image.load(os.path.join(self.image_folder,'shop.jpg'))
+
+        
+    
+        self.shop_bg = pygame.transform.scale(self.shop,
+                                (self.screen_width,self.screen_height)
+                                )
         
 
 

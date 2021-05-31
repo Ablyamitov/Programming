@@ -6,6 +6,7 @@
 #include <iterator>
 #include <nlohmann/json.hpp>
 #include <cpp_httplib/httplib.h>
+#include <cstdlib>
 
 
 using namespace std;
@@ -13,6 +14,7 @@ using namespace httplib;
 using json = nlohmann::json;
 
 std::mutex mtx;
+//std::string enemy_id;
 
 struct Game {
 	int game_id;
@@ -53,9 +55,160 @@ std::map<int, Game> games;
 // Ключ - ID user1
 std::map<std::string, Game> waiting_games;
 
+string return_string(int num) {
+	char c_num;
+	string str = "";
+	int modulo;
+	while (num != 0) {
+		modulo = num % 10;
+		num = num / 10;
+		c_num = (char)(modulo + 48);
+		str = c_num + str;
+	}
+	return str;
+
+}
+
 
 void log(std::string msg) {
 	std::cout << msg << std::endl;
+}
+
+
+
+void check_level(string &s_exp,string &s_next_level_exp,string &s_level) {
+	int level = stoi(s_level);
+	int exp = stoi(s_exp);
+	int next_level_exp = stoi(s_next_level_exp);
+	if (exp >= next_level_exp and level<4) {
+		exp = exp - next_level_exp;
+		level++;
+		next_level_exp += 250;
+	}
+	else if (level == 4 and exp >= next_level_exp) {
+		exp = 0;
+		level++;
+		next_level_exp = 0;
+	}
+	if (exp == 0) {
+		s_exp = "0";
+	}
+	else {
+		s_next_level_exp = return_string(next_level_exp);
+	}
+	if (next_level_exp == 0) {
+		s_next_level_exp = "0";
+	}
+	else {
+		s_exp = return_string(exp);
+	}
+	//s_exp = return_string(exp);
+	//s_next_level_exp = return_string(next_level_exp);
+	s_level = return_string(level);
+
+}
+
+
+
+void set_and_check_exp_and_level(const Request& req, Response& res) {
+	json write_in_file = json::array();
+	json j = json::parse(req.body);
+	string exp = j["exp"];
+	string next_level_exp = j["next_level_exp"];
+	string id = j["id"];
+	string level = j["level"];
+
+	json file;
+	ifstream read_json("config.json");
+	if (!read_json.is_open()) {
+
+		cout << "File to read is not open\n";
+		return;
+	}
+	else {
+		cout << "\nFile to read is open\n";
+		if (!(read_json.peek() == EOF)) {
+			read_json >> file;
+		}
+	}
+	read_json.close();
+	for (int i = 0; i < file.size();i++) {
+		if (file[i]["id"] == id) {
+			//string exp = file[i]["exp"];
+			//string next_level_exp = file[i]["next_level_exp"];
+			//string level = file[i]["level"];
+			//присваиваем новые значения в файл и проверяем лвл
+			//тут убрать, если что
+			check_level(exp, next_level_exp, level);
+			file[i]["exp"] = exp;
+			j["exp"] = exp;
+			file[i]["next_level_exp"] = next_level_exp;
+			j["next_level_exp"] = next_level_exp;
+			file[i]["level"] = level;
+			j["level"] = level;
+		}
+
+	}
+	ofstream write_json("config.json");
+	if (!write_json.is_open()) {
+
+		cout << "File to write is not open\n";
+		return;
+	}
+	else {
+		cout << "\nFile to write is open\n";
+	}
+	for (int i = 0;i < file.size();i++) {
+		write_in_file.push_back(file[i]);
+	}
+	write_json << setw(4) << write_in_file;
+	res.set_content(j.dump(), "text/json; charset=UTF-8");
+
+}
+
+void set_exp_and_coins(const Request& req, Response& res) {
+	json write_in_file = json::array();
+	json j = json::parse(req.body);
+	//string exp = j["exp"];
+	string id = j["id"];
+	string coins = j["coins"];
+
+
+	json file;
+	ifstream read_json("config.json");
+	if (!read_json.is_open()) {
+
+		cout << "File to read is not open\n";
+		return;
+	}
+	else {
+		cout << "\nFile to read is open\n";
+		if (!(read_json.peek() == EOF)) {
+			read_json >> file;
+		}
+	}
+	read_json.close();
+	for (int i = 0; i < file.size();i++) {
+		if (file[i]["id"] == id) {
+			//file[i]["exp"] = exp;
+			file[i]["coins"] = coins;
+		}
+	
+	}
+	ofstream write_json("config.json");
+	if (!write_json.is_open()) {
+
+		cout << "File to write is not open\n";
+		return;
+	}
+	else {
+		cout << "\nFile to write is open\n";
+	}
+	for (int i = 0;i < file.size();i++) {
+		write_in_file.push_back(file[i]);
+	}
+	write_json << setw(4) << write_in_file;
+
 }
 
 // В этой функции подбираем противников и начинаем игру
@@ -88,7 +241,7 @@ void game_search(const Request& req, Response& res) {
 					waiting_games.erase(client_id);
 				}
 				else {
-					// Если второй игрок ещё не подулючился, ждём
+					// Если второй игрок ещё не подключился, ждём
 					log("Game with ID : " + std::to_string(waiting_games[client_id].game_id) + " waiting from User 2");
 					res.set_content(R"({"game_status": "waiting"})", "text/plain; charset=UTF-8");
 				}
@@ -100,8 +253,7 @@ void game_search(const Request& req, Response& res) {
 				game.user2_id = client_id;
 				game.user2_connected = true;
 				log("User with ID : " + client_id + " connect to game  " + std::to_string(game.game_id));
-				// Отправляем клиенту сообщение, что игра началась 
-				res.set_content(R"({"game_status": "run", "game_data": )" + to_string(waiting_games[game.user1_id]) + "}", "text/plain; charset=UTF-8");
+				res.set_content(R"({"game_status": "run", "game_data": )" + to_string(waiting_games[game.user1_id]) +"}", "text/plain; charset=UTF-8");
 			}
 
 		}
@@ -209,31 +361,38 @@ void play_game(const Request& req, Response& res) {
 
 void registration(const Request& req, Response& response) {
 	json j = json::parse(req.body);
+	cout << endl << j << endl;
 	json file;
 	json write_in_file = json::array();
 
 	ifstream read_json("config.json");
 	if (!read_json.is_open()) {
 
-		cout << "File to readdddddd is not open\n";
+		cout << "File to read is not open\n";
+		return;
 	}
 	else {
-		cout << "\nFile to readdddd is open\n";
+		cout << "\nFile to read is open\n";
 		if (!(read_json.peek() == EOF)) {
 			read_json >> file;
-			cout << "\nHello\n";
 		}
 	}
 	read_json.close();
 	for (int i = 0;i < file.size();i++) {
 		write_in_file.push_back(file[i]);
 	}
-
+	cout << endl << j << endl;
 	if (file != "") {
 		for (int i = 0;i < file.size();i++) {
 			if (file[i]["login"] == j["login"]) {
 				cout << "\nЕсть уже такой логин\n";
 				response.set_content("", "text/plain");
+				return;
+			
+			}
+			if (j["login"] == "" or j["password"] == "") {
+				cout << "\nЛогин или пароль не должны быть пустыми\n";
+				response.set_content("empty", "text/plain; charset=UTF-8");
 				return;
 			}
 		}
@@ -242,6 +401,7 @@ void registration(const Request& req, Response& response) {
 	if (!write_json.is_open()) {
 
 		cout << "File to write is not open\n";
+		return;
 	}
 	else {
 		cout << "\nFile to write is open\n";
@@ -249,30 +409,33 @@ void registration(const Request& req, Response& response) {
 	//write_in_file.push_back(j);
 	int num_id = file.size();
 	int id = num_id;
-	char c_num;
-	string str_id = "";
+	string str_id = return_string(num_id);
+	/*char c_num;
 	int modulo;
 	while (num_id != 0) {
 		modulo = num_id % 10;
 		num_id = num_id / 10;
 		c_num = (char)(modulo + 48);
 		str_id = c_num + str_id;
-	}
+	}*/
+	cout << endl << j << endl;
 	j.push_back({ "coins","0" });
 	j.push_back({ "id",str_id });
+	j.push_back({ "level","1" });
+	j.push_back({ "health","1000" });
+	j.push_back({ "exp","0" });
+	j.push_back({ "next_level_exp" ,"1000" });
+	cout << endl<<j <<endl ;
 	write_in_file.push_back(j);
 	write_json << setw(4)<< write_in_file;
 	write_json.close();
 	//size_t last_id = 
-	cout << endl << id << endl;
-	cout <<endl<< file[id] << endl;
 	response.set_content(j.dump(), "text/json; charset=UTF-8");
 
 }
 
-void curr_gen_response(const Request& req, Response& response) {
+void authorization(const Request& req, Response& response) {
 
-	std::cout << req.body << "             ";
 	json j = json::parse(req.body);
 	json write_in_file = json::array();
 
@@ -282,34 +445,23 @@ void curr_gen_response(const Request& req, Response& response) {
 	if (!read_json.is_open()) {
 
 		cout << "File to read is not open\n";
+		return;
 	}
 	else {
 		cout << "\nFile to read is open\n";
 		if (!(read_json.peek() == EOF)) {
 			read_json >> file;
-			cout << "\nHello\n";
 		}
 	}
 	read_json.close();
-	/*cout << endl << j["login"] << endl;
-	cout << endl << j["password"] << endl;
-	cout <<endl<< file[0]["login"]<<endl;
-	cout << endl << file[0]["password"] << endl;*/
 
-	//std::cout << req.body << "             ";
 	for (int i = 0;i < file.size();i++) {
-		cout << "\nЗашёл в цикл\n";
-		if ((file[i]["password"] == j["password"]) and (file[i]["login"] == j["login"])) {
-			//string str = "Нашелся такой человечек c id";
-			cout << "\nНашелся такой человечек c id: " << i << '\n';
-			
+		if ((file[i]["password"] == j["password"]) and (file[i]["login"] == j["login"])) {		
 			response.set_content(file[i].dump(), "text/json; charset=UTF-8");
 			return;
-			//response.set_content(file[i].dump(), "text/json; charset=UTF-8");
 		
 		}
 		else {
-			cout << "НЕТ ТАКОГО ЧЕЛА";
 			response.set_content("", "text/plain");
 		}
 	}
@@ -322,15 +474,14 @@ int main() {
 	setlocale(LC_ALL, "Rus");
 	Server svr;
 
-	svr.Post("/autorizhation", curr_gen_response);
+	svr.Post("/autorizhation", authorization);
 	svr.Post("/registration", registration);
-	svr.Post("/game_search", game_search);    // Вызвать функцию gen_response если кто-то обратиться к корню "сайта"
-	svr.Post("/play_game", play_game);    // Вызвать функцию gen_response если кто-то обратиться к корню "сайта"
-	/*svr.Post("/register", [](const Request& req, Response& response) {
-		}
-	);*/
-	std::cout << "Server '/' is starting\n";
+	svr.Post("/game_search", game_search);    
+	svr.Post("/play_game", play_game);
+	svr.Post("/set_exp_and_coins", set_exp_and_coins);
+	svr.Post("/set_and_check_exp_and_level", set_and_check_exp_and_level);
 
+	std::cout << "Server is starting now...\n";
 	svr.listen("localhost", 3000);
 
 }
